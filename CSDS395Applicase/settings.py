@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'crispy_forms',
+
+    'applicase',
 ]
 
 MIDDLEWARE = [
@@ -103,6 +107,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
+
+AUTH_USER_MODEL = 'applicase.User'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LANGUAGE_CODE = 'en-us'
 
