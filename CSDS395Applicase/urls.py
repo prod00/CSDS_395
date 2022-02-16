@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
-from applicase.views import StudentSignUpView, ProfessorSignUpView, SignUpView, student_home, professor_home, home
+from applicase.views import StudentSignUpView, ProfessorSignUpView, SignUpView, StudentInterestsView, student_home, professor_home, home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,8 +27,9 @@ urlpatterns = [
     path('accounts/profile/', home, name='login_redirect'),
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name="logout"),
     path('', home, name='home'),
-    path('home/student', student_home, name='student_home'),
-    path('home/professor', professor_home, name='professor_home'),
+    path('home/student/', student_home, name='student_home'),
+    path('home/professor/', professor_home, name='professor_home'),
+    path('interests/', StudentInterestsView.as_view(), name='student_interests'),
 ]
 
 
