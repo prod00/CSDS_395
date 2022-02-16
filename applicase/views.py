@@ -37,7 +37,6 @@ def professor_home(request):
     }
     return render(request, 'applicase/professor_home.html', context)
 
-
 class StudentSignUpView(CreateView):
     model = User
     form_class = StudentSignUpForm
