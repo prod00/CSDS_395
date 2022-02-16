@@ -23,6 +23,20 @@ def home(request):
 class SignUpView(TemplateView):
     template_name = 'registration/signup.html'
 
+@student_required
+def student_home(request):
+    context = {
+
+    }
+    return render(request, 'applicase/student_home.html', context)
+
+@professor_required
+def professor_home(request):
+    context = {
+
+    }
+    return render(request, 'applicase/professor_home.html', context)
+
 class StudentSignUpView(CreateView):
     model = User
     form_class = StudentSignUpForm
@@ -52,22 +66,7 @@ class ProfessorSignUpView(CreateView):
         login(self.request, user)
         return redirect('professor_home')
 
-
-@student_required
-def student_home(request):
-    context = {
-
-    }
-    return render(request, 'applicase/student_home.html', context)
-
-@professor_required
-def professor_home(request):
-    context = {
-
-    }
-    return render(request, 'applicase/professor_home.html', context)
-
-@student_required
+@method_decorator([login_required, student_required], name='dispatch')
 class StudentInterestsView(UpdateView):
     model = Student
     form_class = StudentInterestsForm
