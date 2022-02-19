@@ -79,3 +79,4 @@ class StudentInterestsView(UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Interests updated with success!')
         return super().form_valid(form)
+

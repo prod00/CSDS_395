@@ -2,12 +2,18 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db import transaction
 
-from applicase.models import Student, Subject, User
+from applicase.models import Student, Subject, User,StudentYear
 
 class StudentSignUpForm(UserCreationForm):
     interests = forms.ModelMultipleChoiceField(
         queryset=Subject.objects.all(),
         widget=forms.CheckboxSelectMultiple,
+        required=True
+    )
+
+    year = forms.ModelChoiceField(
+        queryset=StudentYear.objects.all(),
+        widget=forms.RadioSelect,
         required=True
     )
 
@@ -21,6 +27,7 @@ class StudentSignUpForm(UserCreationForm):
         user.save()
         student = Student.objects.create(user=user)
         student.interests.add(*self.cleaned_data.get('interests'))
+        student.year.add(self.cleaned_data.get('year'))
         return user
 
 class ProfessorSignUpForm(UserCreationForm):
@@ -40,4 +47,11 @@ class StudentInterestsForm(forms.ModelForm):
         fields = ('interests', )
         widgets = {
             'interests': forms.CheckboxSelectMultiple
+        }
+class StudentYearForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ('year', )
+        widgets = {
+            'year': forms.CheckboxInput
         }

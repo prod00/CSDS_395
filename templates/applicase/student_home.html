@@ -2,10 +2,10 @@
 
 
 {% block content %}
-  <h2>Student Account</h2>
-    <p class="text-muted">
-      <a href="{% url 'student_interests' %}">{% for subject in user.student.interests.all %} {{ subject.get_html_badge }}{% endfor %}</a>
+    <h2>Account Information</h2>
+    <p>Username: {{user.username}}</p>
 
+    <p>Interests: <a href="{% url 'student_interests' %}">{% for subject in user.student.interests.all %} {{ subject.get_html_badge }}{% endfor %}</a></p>
+    <p>Year: {% for year in user.student.year.all %} {{ year }}{% endfor %}</p>
 
-    </p>
 {% endblock %}

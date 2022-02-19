@@ -22,9 +22,17 @@ class Subject(models.Model):
         html = '<span class="badge badge-primary" style="background-color: %s">%s</span>' % (color, name)
         return mark_safe(html)
 
+class StudentYear(models.Model):
+    year = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.year
+
+
+
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    year = models.CharField(choices=YEAR_TYPES, max_length=50, default="Freshman")
+    year = models.ManyToManyField(StudentYear, related_name='year_students')
     interests = models.ManyToManyField(Subject, related_name='interested_students')
 
     def __str__(self):
