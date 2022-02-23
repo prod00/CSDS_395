@@ -7,10 +7,10 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView
-
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .decorators import student_required, professor_required
 from .forms import StudentSignUpForm, ProfessorSignUpForm, StudentInterestsForm
-from .models import User, Student
+from .models import User, Student, Professor, TAPositionPost
 
 def home(request):
     if request.user.is_authenticated:
@@ -51,6 +51,9 @@ class StudentSignUpView(CreateView):
         login(self.request, user)
         return redirect('student_home')
 
+def studentuniqueID(request):
+    messages.success(request, 'Case ID must be unique')
+    return redirect('student_signup')
 
 class ProfessorSignUpView(CreateView):
     model = User
@@ -79,4 +82,12 @@ class StudentInterestsView(UpdateView):
     def form_valid(self, form):
         messages.success(self.request, 'Interests updated with success!')
         return super().form_valid(form)
+
+# class TAPostCreateView(LoginRequiredMixin, CreateView):
+#     model = TAPositionPost
+#     fields = ['position', 'knowledge', 'content', 'pay']  # All the fields the user needs to fill in
+#
+#     def form_valid(self, form):
+#         form.instance.recruiter = self.request.user  # Making the current user the recruiter of the post
+#         return super().form_valid(form)
 

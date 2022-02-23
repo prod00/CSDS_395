@@ -28,17 +28,41 @@ class StudentYear(models.Model):
     def __str__(self):
         return self.year
 
+class Professor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    case_id = models.CharField(max_length=10, unique=True)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.user.username
 
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    case_id = models.CharField(max_length=10)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
     year = models.ManyToManyField(StudentYear, related_name='year_students')
     interests = models.ManyToManyField(Subject, related_name='interested_students')
 
     def __str__(self):
         return self.user.username
 
-# class PositionPost(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-#     title = models.CharField(max_length=100)
-#     date_posted = models.DateTimeField(default=timezone.now)
+class TAPositionPost(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    date_posted = models.DateTimeField(default=timezone.now)
+
+    section = models.CharField(max_length=9)  # e.g. CSDS 492
+    description = models.TextField()
+
+class TAApplication(models.Model):
+    user = models.ForeignKey(Student, on_delete=models.CASCADE)
+    date_applied = models.DateTimeField(default=timezone.now)
+    position = models.ForeignKey(TAPositionPost, on_delete=models.CASCADE)
+
+    taken = models.BooleanField(default=False)  # the bool for if the student has take the class
+    grade = models.FloatField(max_length=4)  # This will be out of 100 to organize the students by grade
+    semester = models.FloatField(max_length=6)  # 2020.5 if it was fall, 2020 if spring. Allow for another way to organize
+    professor = models.CharField(max_length=50)  # First and Last name of the professor they took course with
+    comment = models.TextField()  # Anything else the student may want to add

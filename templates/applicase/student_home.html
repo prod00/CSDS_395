@@ -3,7 +3,8 @@
 
 {% block content %}
     <h2>Account Information</h2>
-    <p>Username: {{user.username}}</p>
+    <p>Name: {{user.first_name}} {{user.last_name}} </p>
+    <p>Case ID: {{ user.username }}</p>
 
     <p>Interests: <a href="{% url 'student_interests' %}">{% for subject in user.student.interests.all %} {{ subject.get_html_badge }}{% endfor %}</a></p>
     <p>Year: {% for year in user.student.year.all %} {{ year }}{% endfor %}</p>
