@@ -66,3 +66,8 @@ class TAApplication(models.Model):
     semester = models.FloatField(max_length=6)  # 2020.5 if it was fall, 2020 if spring. Allow for another way to organize
     professor = models.CharField(max_length=50)  # First and Last name of the professor they took course with
     comment = models.TextField()  # Anything else the student may want to add
+
+class Courses(models.Model):
+    course_code = models.CharField(max_length=10, primary_key=True)
+    course_name = models.CharField(max_length=112)
+    course_credits = models.FloatField(max_length=1)
