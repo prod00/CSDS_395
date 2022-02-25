@@ -50,11 +50,14 @@ class Student(models.Model):
 
 class TAPositionPost(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
     date_posted = models.DateTimeField(default=timezone.now)
 
     section = models.CharField(max_length=9)  # e.g. CSDS 492
     description = models.TextField()
+
+    def __str__(self):
+        return self.section
+
 
 class TAApplication(models.Model):
     user = models.ForeignKey(Student, on_delete=models.CASCADE)

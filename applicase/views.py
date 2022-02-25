@@ -9,15 +9,15 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .decorators import student_required, professor_required
-from .forms import StudentSignUpForm, ProfessorSignUpForm, StudentInterestsForm
+from .forms import StudentSignUpForm, ProfessorSignUpForm, StudentInterestsForm, TAPositionPostForm
 from .models import User, Student, Professor, TAPositionPost
 
 def home(request):
     if request.user.is_authenticated:
         if request.user.is_student:
-            return render(request, 'applicase/student_home.html')
+            return redirect('student_home')
         else:
-            return render(request, 'applicase/professor_home.html')
+            return redirect('professor_home')
     return render(request, 'registration/signup.html')
 
 class SignUpView(TemplateView):
@@ -32,9 +32,11 @@ def student_home(request):
 
 @professor_required
 def professor_home(request):
+    ta_post_form = TAPositionPostForm()
     context = {
-
+        'ta_post_form': ta_post_form,
     }
+    print("HI",ta_post_form)
     return render(request, 'applicase/professor_home.html', context)
 
 class StudentSignUpView(CreateView):
@@ -83,11 +85,24 @@ class StudentInterestsView(UpdateView):
         messages.success(self.request, 'Interests updated with success!')
         return super().form_valid(form)
 
-# class TAPostCreateView(LoginRequiredMixin, CreateView):
-#     model = TAPositionPost
-#     fields = ['position', 'knowledge', 'content', 'pay']  # All the fields the user needs to fill in
-#
-#     def form_valid(self, form):
-#         form.instance.recruiter = self.request.user  # Making the current user the recruiter of the post
-#         return super().form_valid(form)
+def ta_post_submit(request):
+    print('BOOBS')
+    position_form = TAPositionPostForm(request.POST)
+    if request.method == 'POST':
+        if position_form.is_valid():
+            section = position_form.cleaned_data['section']
+            description = position_form.cleaned_data['description']
+            print(section, description)
+            user = request.user
+            new_position = TAPositionPost.objects.create(section=section, description=description, user=user)
+            new_position.save()
+            messages.success(request, 'The TA position has been posted!')
 
+            return redirect('professor_home')
+        else:
+            print("DIDNT WORK")
+
+    else:
+        print('BOOBS')
+        ta_post_form = TAPositionPostForm()
+        return render(request, 'applicase/professor_home.html', {'ta_post_form': ta_post_form})

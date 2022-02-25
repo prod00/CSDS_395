@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
-from applicase.views import StudentSignUpView, ProfessorSignUpView, SignUpView, StudentInterestsView, student_home, professor_home, home, studentuniqueID
+from applicase.views import StudentSignUpView, ProfessorSignUpView, SignUpView, StudentInterestsView, student_home, \
+    professor_home, home, studentuniqueID, ta_post_submit
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +32,8 @@ urlpatterns = [
     path('home/professor/', professor_home, name='professor_home'),
     path('interests/', StudentInterestsView.as_view(), name='student_interests'),
     path('signup/integrity-error', studentuniqueID, name='integrity-error'),
+    path('professor/ta-post/', ta_post_submit, name='ta-post'),
+
 ]
 
 

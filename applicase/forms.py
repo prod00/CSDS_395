@@ -4,7 +4,7 @@ from django.db import transaction
 from django.db import IntegrityError
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
-from applicase.models import Student, Subject, User, StudentYear, Professor
+from applicase.models import Student, Subject, User, StudentYear, Professor, TAPositionPost
 
 class StudentSignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=50)
@@ -76,3 +76,10 @@ class StudentYearForm(forms.ModelForm):
         widgets = {
             'year': forms.CheckboxInput
         }
+
+class TAPositionPostForm(forms.Form):
+    section = forms.CharField(max_length=9)
+    description = forms.CharField(widget=forms.Textarea)
+    class Meta:
+        model = TAPositionPost
+        fields = ['section', 'description']
