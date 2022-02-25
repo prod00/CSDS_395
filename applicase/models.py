@@ -68,6 +68,7 @@ class TAApplication(models.Model):
     comment = models.TextField()  # Anything else the student may want to add
 
 class Courses(models.Model):
-    course_code = models.CharField(max_length=10, primary_key=True)
-    course_name = models.CharField(max_length=112)
-    course_credits = models.FloatField(max_length=1)
+    code = models.CharField(max_length=10, primary_key=True)
+    name = models.CharField(max_length=112)
+    department = models.CharField(max_length=45)
+    credits = models.FloatField(max_length=1)
