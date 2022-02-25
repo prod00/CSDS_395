@@ -72,3 +72,8 @@ class Courses(models.Model):
     name = models.CharField(max_length=112)
     department = models.CharField(max_length=45)
     credits = models.FloatField(max_length=1)
+
+class MajorMinor(models.Model):
+    name = models.CharField(max_length=67, primary_key=True)
+    is_major = models.BooleanField()
+    is_minor = models.BooleanField()
