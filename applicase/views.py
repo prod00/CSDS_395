@@ -25,7 +25,19 @@ class SignUpView(TemplateView):
 
 @student_required
 def student_home(request):
+    professor_posts = TAPositionPost.objects.all().order_by('-date_posted')
+    #if professor_posts
+    user_interests = []
+    posts = []
+    for interest in request.user.student.interests.get_queryset():
+        user_interests.append(interest.section)
+    for post in professor_posts:
+        for ui in user_interests:
+            if ui in post.section:
+                posts.append(post)
+
     context = {
+        'posts': posts,
 
     }
     return render(request, 'applicase/student_home.html', context)
@@ -33,10 +45,11 @@ def student_home(request):
 @professor_required
 def professor_home(request):
     ta_post_form = TAPositionPostForm()
+    professor_posts = TAPositionPost.objects.filter(user=request.user).order_by('-date_posted')
     context = {
         'ta_post_form': ta_post_form,
+        'posts': professor_posts,
     }
-    print("HI",ta_post_form)
     return render(request, 'applicase/professor_home.html', context)
 
 class StudentSignUpView(CreateView):
@@ -86,7 +99,6 @@ class StudentInterestsView(UpdateView):
         return super().form_valid(form)
 
 def ta_post_submit(request):
-    print('BOOBS')
     position_form = TAPositionPostForm(request.POST)
     if request.method == 'POST':
         if position_form.is_valid():
@@ -99,10 +111,7 @@ def ta_post_submit(request):
             messages.success(request, 'The TA position has been posted!')
 
             return redirect('professor_home')
-        else:
-            print("DIDNT WORK")
 
     else:
-        print('BOOBS')
         ta_post_form = TAPositionPostForm()
         return render(request, 'applicase/professor_home.html', {'ta_post_form': ta_post_form})

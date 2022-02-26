@@ -11,6 +11,7 @@ class User(AbstractUser):
 
 class Subject(models.Model):
     name = models.CharField(max_length=50)
+    section = models.CharField(max_length=50, default="XXXX")
     color = models.CharField(max_length=7, default='#007bff')
 
     def __str__(self):
