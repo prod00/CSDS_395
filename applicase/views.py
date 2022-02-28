@@ -26,16 +26,24 @@ class SignUpView(TemplateView):
 @student_required
 def student_home(request):
     professor_posts = TAPositionPost.objects.all().order_by('-date_posted')
+    student_applications = TAApplication.objects.filter(user=request.user.student).order_by('-date_applied')
     ta_application_form = TAApplicationForm()
-    #if professor_posts
     user_interests = []
     posts = []
+    applied_to_posts = []
     for interest in request.user.student.interests.get_queryset():
         user_interests.append(interest.section)
     for post in professor_posts:
         for ui in user_interests:
             if ui in post.section:
                 posts.append(post)
+
+    for app in student_applications:
+        for post in posts:
+            if post.id == app.position.id:
+                applied_to_posts.append(post)
+                posts.remove(post)
+
     applied = False
     post_id = None
     if request.method == 'POST':
@@ -63,10 +71,11 @@ def student_home(request):
                                                                 comment=comment)
                 new_application.save()
                 messages.success(request, 'The TA application for '+str(position.section)+' has been sent!')
-
+                return redirect('student_home')
     context = {
         'posts': posts,
         'ta_application_form': ta_application_form,
+        'applied_posts': applied_to_posts,
 
     }
     return render(request, 'applicase/student_home.html', context)

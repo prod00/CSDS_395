@@ -5,20 +5,31 @@
 {% block content %}
     <style>
         .collapsible {
-      background-color: lightblue;
-      color: #444;
-      cursor: pointer;
-      padding: 10px;
-      width: 100%;
-      border: 2px solid black;
-      text-align: center;
-      outline: none;
-      font-size: 20px;
-            border-radius: 5px;
-    }
+          background-color: lightblue;
+          color: #444;
+          cursor: pointer;
+          padding: 5px;
+          width: 100%;
+          border: 2px solid black;
+          text-align: center;
+          outline: none;
+          font-size: 18px;
+                border-radius: 5px;
+        }
+        .applied {
+          background-color: greenyellow;
+          color: #444;
+          cursor: pointer;
+          padding: 5px;
+          width: 100%;
+          border: 2px solid black;
+          text-align: center;
+          outline: none;
+          font-size: 18px;
+                border-radius: 5px;
+        }
 
-    /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
-    .active, .collapsible:hover {
+   .active, .collapsible:hover {
       background-color: greenyellow;
     }
 
@@ -58,10 +69,8 @@
             <hr>
             <p>{{ post.description }}</p>
             <br>
-            <hr>
-
             <i>Posted by {{ post.user.get_full_name }} on {{ post.date_posted }}</i>
-
+            <hr>
             <button type="button" class="collapsible">APPLICATION</button>
             <div class="content">
                 <form method="POST" enctype="multipart/form-data" action="/home/student/">
@@ -70,6 +79,19 @@
                     <input type="submit" value="apply" name="post_id{{ post.id }}">
                 </form>
             </div>
+        </div>
+        <br>
+    {% endfor %}
+    {% for post in applied_posts %}
+        <div class="post">
+            <h4 style="text-align: center">{{ post.section }}</h4>
+            <hr>
+            <p>{{ post.description }}</p>
+            <br>
+            <i>Posted by {{ post.user.get_full_name }} on {{ post.date_posted }}</i>
+            <hr>
+            <p class="applied">APPLIED ALREADY</p>
+
         </div>
         <br>
     {% endfor %}
