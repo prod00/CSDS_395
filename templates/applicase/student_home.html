@@ -82,15 +82,23 @@
         </div>
         <br>
     {% endfor %}
-    {% for post in applied_posts %}
+    {% for application in applications %}
         <div class="post">
-            <h4 style="text-align: center">{{ post.section }}</h4>
+            <h4 style="text-align: center">{{ application.position.section }}</h4>
             <hr>
-            <p>{{ post.description }}</p>
+            <p>{{ application.position.description }}</p>
             <br>
-            <i>Posted by {{ post.user.get_full_name }} on {{ post.date_posted }}</i>
+            <i>Posted by {{ application.position.user.get_full_name }} on {{ application.position.date_posted }}</i>
             <hr>
-            <p class="applied">APPLIED ALREADY</p>
+            <button type="button" class="applied">APPLICATION</button>
+            <div class="content">
+                <p>Taken Course: {{ application.taken }}</p>
+                <p>Grade Received: {{ application.grade }}</p>
+                <p>Year Taken: {{ application.semester }}</p>
+                <p>Professor: {{ application.professor }}</p>
+                <p>Comment: {{ application.comment }}</p>
+                <p>Applied: {{ application.date_applied }}</p>
+            </div>
 
         </div>
         <br>
@@ -102,6 +110,21 @@ var i;
 
 for (i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+
+var coll2 = document.getElementsByClassName("applied");
+var j;
+
+for (j = 0; j < coll2.length; j++) {
+  coll2[j].addEventListener("click", function() {
     this.classList.toggle("active");
     var content = this.nextElementSibling;
     if (content.style.display === "block") {

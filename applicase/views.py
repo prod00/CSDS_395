@@ -30,7 +30,7 @@ def student_home(request):
     ta_application_form = TAApplicationForm()
     user_interests = []
     posts = []
-    applied_to_posts = []
+    applications = []
     for interest in request.user.student.interests.get_queryset():
         user_interests.append(interest.section)
     for post in professor_posts:
@@ -41,7 +41,7 @@ def student_home(request):
     for app in student_applications:
         for post in posts:
             if post.id == app.position.id:
-                applied_to_posts.append(post)
+                applications.append(app)
                 posts.remove(post)
 
     applied = False
@@ -75,7 +75,7 @@ def student_home(request):
     context = {
         'posts': posts,
         'ta_application_form': ta_application_form,
-        'applied_posts': applied_to_posts,
+        'applications': applications,
 
     }
     return render(request, 'applicase/student_home.html', context)
