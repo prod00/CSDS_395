@@ -92,7 +92,7 @@ class TAApplicationForm(forms.Form):
     ]
     taken = forms.BooleanField(label="Check if you have taken the class")
     grade = forms.ChoiceField(choices=GRADE_TYPES, label="Grade in the class")
-    semester = forms.FloatField(label="Year you took the class")
+    semester = forms.FloatField(label="Year you took the class (add .5 for fall semester)")
     professor = forms.CharField(max_length=50, label="First and last name of professor")
     comment = forms.CharField(widget=forms.Textarea)
 

@@ -57,12 +57,14 @@
             <hr>
             <button type="button" class="applied">APPLICATION</button>
             <div class="content">
-                <p>Taken Course: {{ application.taken }}</p>
-                <p>Grade Received: {{ application.grade }}</p>
-                <p>Year Taken: {{ application.semester }}</p>
-                <p>Professor: {{ application.professor }}</p>
-                <p>Comment: {{ application.comment }}</p>
-                <p>Applied: {{ application.date_applied }}</p>
+                <br>
+                <p> You took <strong>{{ application.position.section }}</strong> in <strong>{{ application.semester }}</strong> with Professor <strong>{{ application.professor }}</strong> and received a <strong>{{ application.grade }}</strong> in the class.</p>
+                <br>
+                <div style="border-radius: 5px; border: black solid 2px; padding: 5PX; background-color: #fefefe">
+                    <p>{{ application.comment }}</p>
+                </div>
+
+                <i>Applied {{ application.date_applied }}</i>
             </div>
 
         </div>
