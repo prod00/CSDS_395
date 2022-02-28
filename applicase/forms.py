@@ -29,8 +29,6 @@ class StudentSignUpForm(UserCreationForm):
 
     @transaction.atomic
     def save(self):
-
-
         user = super().save(commit=False)
         user.is_student = True
         user.username = self.cleaned_data.get('case_id')
@@ -52,14 +50,14 @@ class ProfessorSignUpForm(UserCreationForm):
         model = User
         fields = ['first_name', 'last_name', 'case_id']
 
+    @transaction.atomic
     def save(self, commit=True):
         user = super().save(commit=False)
         user.is_professor = True
         user.username = self.cleaned_data.get('case_id')
+        user.save()
         professor = Professor.objects.create(user=user)
-        #professor.save()
-        if commit:
-            user.save()
+        professor.save()
         return user
 
 class StudentInterestsForm(forms.ModelForm):

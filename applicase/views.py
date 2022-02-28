@@ -118,8 +118,7 @@ class ProfessorSignUpView(CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
+        login(self.request, form.save())
         return redirect('professor_home')
 
 @method_decorator([login_required, student_required], name='dispatch')
