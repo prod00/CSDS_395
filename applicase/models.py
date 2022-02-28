@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.html import escape, mark_safe
 
-YEAR_TYPES: Tuple[Tuple[str, str], Tuple[str, str], Tuple[str, str], Tuple[str, str], Tuple[str, str]] = (("Freshman", "Freshman"), ("Sophomore", "Sophomore"), ("Junior", "Junior"), ("Senior", "Senior"), ("Other", "Other"))
+
 class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_professor = models.BooleanField(default=False)
@@ -65,11 +65,22 @@ class TAApplication(models.Model):
     date_applied = models.DateTimeField(default=timezone.now)
     position = models.ForeignKey(TAPositionPost, on_delete=models.CASCADE)
 
+    GRADE_TYPES = [
+        ("A", "A"),
+        ("B", "B"),
+        ("C", "C"),
+        ("D", "D"),
+        ("P", "P"),
+    ]
+
     taken = models.BooleanField(default=False)  # the bool for if the student has take the class
-    grade = models.FloatField(max_length=4)  # This will be out of 100 to organize the students by grade
+    grade = models.CharField(max_length=1, choices=GRADE_TYPES)  # This will be out of 100 to organize the students by grade
     semester = models.FloatField(max_length=6)  # 2020.5 if it was fall, 2020 if spring. Allow for another way to organize
     professor = models.CharField(max_length=50)  # First and Last name of the professor they took course with
     comment = models.TextField()  # Anything else the student may want to add
+
+    def __str__(self):
+        return str(self.user)
 
 class Courses(models.Model):
     code = models.CharField(max_length=10, primary_key=True)

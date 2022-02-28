@@ -4,7 +4,7 @@ from django.db import transaction
 from django.db import IntegrityError
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
-from applicase.models import Student, Subject, User, StudentYear, Professor, TAPositionPost
+from applicase.models import Student, Subject, User, StudentYear, Professor, TAPositionPost, TAApplication
 
 class StudentSignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=50)
@@ -83,3 +83,21 @@ class TAPositionPostForm(forms.Form):
     class Meta:
         model = TAPositionPost
         fields = ['section', 'description']
+
+class TAApplicationForm(forms.Form):
+    GRADE_TYPES = [
+        ("A", "A"),
+        ("B", "B"),
+        ("C", "C"),
+        ("D", "D"),
+        ("P", "P"),
+    ]
+    taken = forms.BooleanField(label="Check if you have taken the class")
+    grade = forms.ChoiceField(choices=GRADE_TYPES, label="Grade in the class")
+    semester = forms.FloatField(label="Year you took the class")
+    professor = forms.CharField(max_length=50, label="First and last name of professor")
+    comment = forms.CharField(widget=forms.Textarea)
+
+    class Meta:
+        model = TAApplication
+        fields = ['taken', 'grade', 'semester', 'professor', 'comment']

@@ -4,13 +4,40 @@
 
 {% block content %}
     <style>
-        .post {
-      background-color: whitesmoke;
-      width: 98%;
+        .collapsible {
+      background-color: lightblue;
+      color: #444;
+      cursor: pointer;
+      padding: 10px;
+      width: 100%;
       border: 2px solid black;
+      text-align: center;
+      outline: none;
+      font-size: 20px;
+            border-radius: 5px;
+    }
+
+    /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+    .active, .collapsible:hover {
+      background-color: greenyellow;
+    }
+
+    /* Style the collapsible content. Note: hidden by default */
+    .content {
+      padding: 0 18px;
+      display: none;
+      overflow: hidden;
+      background-color: #f1f1f1;
+        border-radius: 5px;
+
+    }
+    .post {
+        background-color: whitesmoke;
+        width: 98%;
+        border: 2px solid black;
         border-radius: 10px;
-      padding: 20px;
-      margin: 5px;
+        padding: 20px;
+        margin: 5px;
     }
     </style>
     <div class="post">
@@ -34,9 +61,33 @@
             <hr>
 
             <i>Posted by {{ post.user.get_full_name }} on {{ post.date_posted }}</i>
+
+            <button type="button" class="collapsible">APPLICATION</button>
+            <div class="content">
+                <form method="POST" enctype="multipart/form-data" action="/home/student/">
+                    {% csrf_token %}
+                    {{ta_application_form.as_ul}}
+                    <input type="submit" value="apply" name="post_id{{ post.id }}">
+                </form>
+            </div>
         </div>
         <br>
     {% endfor %}
 </div>
+    <script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
 
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+</script>
 {% endblock %}

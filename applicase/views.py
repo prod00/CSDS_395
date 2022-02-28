@@ -9,8 +9,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .decorators import student_required, professor_required
-from .forms import StudentSignUpForm, ProfessorSignUpForm, StudentInterestsForm, TAPositionPostForm
-from .models import User, Student, Professor, TAPositionPost
+from .forms import StudentSignUpForm, ProfessorSignUpForm, StudentInterestsForm, TAPositionPostForm, TAApplicationForm
+from .models import User, Student, Professor, TAPositionPost, TAApplication
 
 def home(request):
     if request.user.is_authenticated:
@@ -26,6 +26,7 @@ class SignUpView(TemplateView):
 @student_required
 def student_home(request):
     professor_posts = TAPositionPost.objects.all().order_by('-date_posted')
+    ta_application_form = TAApplicationForm()
     #if professor_posts
     user_interests = []
     posts = []
@@ -35,9 +36,37 @@ def student_home(request):
         for ui in user_interests:
             if ui in post.section:
                 posts.append(post)
+    applied = False
+    post_id = None
+    if request.method == 'POST':
+        for key, value in request.POST.items():
+            if 'post_id' in key:
+                post_id = key.replace('post_id','')
+                applied = True
+        if applied:
+            new_ta_application_form = TAApplicationForm(request.POST)
+            if new_ta_application_form.is_valid():
+                user = request.user.student
+                position = TAPositionPost.objects.get(id=int(post_id))
+                taken = new_ta_application_form.cleaned_data['taken']
+                grade = new_ta_application_form.cleaned_data['grade']
+                semester = new_ta_application_form.cleaned_data['semester']
+                professor = new_ta_application_form.cleaned_data['professor']
+                comment = new_ta_application_form.cleaned_data['comment']
+
+                new_application = TAApplication.objects.create(user=user,
+                                                                position=position,
+                                                                taken=taken,
+                                                                grade=grade,
+                                                                semester=semester,
+                                                                professor=professor,
+                                                                comment=comment)
+                new_application.save()
+                messages.success(request, 'The TA application for '+str(position.section)+' has been sent!')
 
     context = {
         'posts': posts,
+        'ta_application_form': ta_application_form,
 
     }
     return render(request, 'applicase/student_home.html', context)
@@ -115,3 +144,4 @@ def ta_post_submit(request):
     else:
         ta_post_form = TAPositionPostForm()
         return render(request, 'applicase/professor_home.html', {'ta_post_form': ta_post_form})
+
