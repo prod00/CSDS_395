@@ -31,7 +31,7 @@ class StudentYear(models.Model):
 
 class Professor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    case_id = models.CharField(max_length=10, unique=True)
+    case_id = models.CharField(max_length=10)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
 

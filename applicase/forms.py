@@ -40,10 +40,8 @@ class StudentSignUpForm(UserCreationForm):
 
 
 
-
-
 class ProfessorSignUpForm(UserCreationForm):
-    case_id = forms.CharField(max_length=10)
+    case_id = forms.CharField(max_length=10, required=True)
     first_name = forms.CharField(max_length=50)
     last_name = forms.CharField(max_length=50)
     class Meta(UserCreationForm.Meta):
@@ -55,7 +53,10 @@ class ProfessorSignUpForm(UserCreationForm):
         user = super().save(commit=False)
         user.is_professor = True
         user.username = self.cleaned_data.get('case_id')
+
+
         user.save()
+
         professor = Professor.objects.create(user=user)
         professor.save()
         return user
