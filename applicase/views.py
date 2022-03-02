@@ -46,6 +46,7 @@ def student_home(request):
 
     applied = False
     post_id = None
+
     if request.method == 'POST':
         for key, value in request.POST.items():
             if 'post_id' in key:
@@ -58,7 +59,12 @@ def student_home(request):
                 position = TAPositionPost.objects.get(id=int(post_id))
                 taken = new_ta_application_form.cleaned_data['taken']
                 grade = new_ta_application_form.cleaned_data['grade']
-                semester = new_ta_application_form.cleaned_data['semester']
+                float_year = new_ta_application_form.cleaned_data['year']
+                if int(float_year) != float_year:
+                    semester = "fall"
+                else:
+                    semester = "spring"
+                year = int(float_year)
                 professor = new_ta_application_form.cleaned_data['professor']
                 comment = new_ta_application_form.cleaned_data['comment']
 
@@ -66,6 +72,7 @@ def student_home(request):
                                                                 position=position,
                                                                 taken=taken,
                                                                 grade=grade,
+                                                                year=year,
                                                                 semester=semester,
                                                                 professor=professor,
                                                                 comment=comment)
@@ -76,6 +83,7 @@ def student_home(request):
         'posts': posts,
         'ta_application_form': ta_application_form,
         'applications': applications,
+
 
     }
     return render(request, 'applicase/student_home.html', context)
@@ -153,3 +161,10 @@ def ta_post_submit(request):
         ta_post_form = TAPositionPostForm()
         return render(request, 'applicase/professor_home.html', {'ta_post_form': ta_post_form})
 
+def ta_applications(request, pk=1):
+
+    ta_apps = TAApplication.objects.filter(position__user=request.user, position_id=pk).order_by('-date_applied')
+    post = TAPositionPost.objects.get(pk=pk)
+    context = {"applications": ta_apps,
+               "post": post}
+    return render(request, 'applicase/professor_TAapplications.html', context)

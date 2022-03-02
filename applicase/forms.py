@@ -77,7 +77,7 @@ class StudentYearForm(forms.ModelForm):
         }
 
 class TAPositionPostForm(forms.Form):
-    section = forms.CharField(max_length=9)
+    section = forms.CharField(max_length=9, label="Section (ex. MATH 101):")
     description = forms.CharField(widget=forms.Textarea)
     class Meta:
         model = TAPositionPost
@@ -91,12 +91,12 @@ class TAApplicationForm(forms.Form):
         ("D", "D"),
         ("P", "P"),
     ]
-    taken = forms.BooleanField(label="Check if you have taken the class")
+    taken = forms.BooleanField(required=True, label="Verify that you have taken this course before:")
     grade = forms.ChoiceField(choices=GRADE_TYPES, label="Grade in the class")
-    semester = forms.FloatField(label="Year you took the class (add .5 for fall semester)")
+    year = forms.FloatField(label="Year you took the class (add .5 for fall semester)")
     professor = forms.CharField(max_length=50, label="First and last name of professor")
     comment = forms.CharField(widget=forms.Textarea)
 
     class Meta:
         model = TAApplication
-        fields = ['taken', 'grade', 'semester', 'professor', 'comment']
+        fields = ['taken', 'grade', 'year', 'professor', 'comment']

@@ -8,7 +8,7 @@
       <h2 style="text-align: center">Teaching Assistant</h2><hr>
     <form method="POST" enctype="multipart/form-data" action="/professor/ta-post/">
         {% csrf_token %}
-        <div style="word-spacing: 100vw"> {{ta_post_form.as_p}} </div> <br>
+        <div> {{ta_post_form.as_p}} </div> <br>
         <input type="submit" value="submit">
     </form>
   </div>

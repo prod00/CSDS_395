@@ -1,0 +1,32 @@
+{% extends "applicase/base.html" %}
+{% block content %}
+    <style>
+    .post {
+        background-color: whitesmoke;
+        width: 98%;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 5px;
+    }
+    </style>
+    <a href="{% url "professor_home" %}">Back</a>
+    {% if applications %}
+    {% for application in applications %}
+        <div class="post">
+            <br>
+            <p> <strong>{{ application.user.user.first_name }} {{ application.user.user.last_name }} ({{ application.user }})</strong> took <strong>{{ application.position.section }}</strong> in <strong>{{ application.year }} {{ application.semester }} semester</strong> with Professor <strong>{{ application.professor }}</strong> and received a <strong>{{ application.grade }}</strong> in the class.</p>
+            <br>
+            <div style="border-radius: 5px; border: black solid 2px; padding: 5PX; background-color: #fefefe">
+                <p>{{ application.comment }}</p>
+            </div>
+
+            <i>Applied {{ application.date_applied }}</i>
+
+        </div>
+        <br>
+    {% endfor %}
+    {% else %}
+        <strong style="text-align: center">There are currently no applications for {{ post.section }}</strong>
+    {% endif %}
+{% endblock %}

@@ -75,7 +75,8 @@ class TAApplication(models.Model):
 
     taken = models.BooleanField(default=False)  # the bool for if the student has take the class
     grade = models.CharField(max_length=1, choices=GRADE_TYPES)  # This will be out of 100 to organize the students by grade
-    semester = models.FloatField(max_length=6)  # 2020.5 if it was fall, 2020 if spring. Allow for another way to organize
+    year = models.IntegerField(default=2000)  # 2020.5 if it was fall, 2020 if spring. Allow for another way to organize
+    semester = models.CharField(max_length=6, default="spring")
     professor = models.CharField(max_length=50)  # First and Last name of the professor they took course with
     comment = models.TextField()  # Anything else the student may want to add
 
