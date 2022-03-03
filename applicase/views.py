@@ -163,8 +163,8 @@ def ta_post_submit(request):
         ta_post_form = TAPositionPostForm()
         return render(request, 'applicase/professor_home.html', {'ta_post_form': ta_post_form})
 
+@professor_required
 def ta_applications(request, pk=1):
-
     ta_apps = TAApplication.objects.filter(position__user=request.user, position_id=pk).order_by('-date_applied')
     post = TAPositionPost.objects.get(pk=pk)
     context = {"applications": ta_apps,
