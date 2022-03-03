@@ -1,0 +1,12 @@
+{% extends 'applicase/base.html' %}
+
+{% block content %}
+
+{% for app_submitted in apps_submitted %}
+        <div class="post">
+            <i>Applied to {{ app_submitted.position }} with Professor {{ app_submitted.professor }} on {{ app_submitted.date_applied }}</i>
+        </div>
+        <br>
+    {% endfor %}
+
+{% endblock %}

@@ -80,6 +80,17 @@ def student_home(request):
     }
     return render(request, 'applicase/student_home.html', context)
 
+def apps_submitted(request):
+    ta_apps_submitted = TAApplication.objects.filter(user = request.user.student)
+    print(ta_apps_submitted)
+
+    context = {
+        'apps_submitted': ta_apps_submitted,
+    }
+    return render(request, 'applicase/apps_submitted.html', context)
+
+
+
 @professor_required
 def professor_home(request):
     ta_post_form = TAPositionPostForm()

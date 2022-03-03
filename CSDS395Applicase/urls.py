@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from applicase.views import StudentSignUpView, ProfessorSignUpView, SignUpView, StudentInterestsView, student_home, \
-    professor_home, home, studentuniqueID, ta_post_submit
+    professor_home, home, studentuniqueID, ta_post_submit, apps_submitted
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,6 +33,7 @@ urlpatterns = [
     path('interests/', StudentInterestsView.as_view(), name='student_interests'),
     path('signup/integrity-error', studentuniqueID, name='integrity-error'),
     path('professor/ta-post/', ta_post_submit, name='ta-post'),
+    path('student/applications/', apps_submitted, name='applications'),
 
 ]
 
