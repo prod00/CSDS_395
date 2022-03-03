@@ -28,6 +28,7 @@ urlpatterns = [
     path('accounts/profile/', home, name='login_redirect'),
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name="logout"),
     path('', home, name='home'),
+    path('index/', home, name="index"),
     path('home/student/', student_home, name='student_home'),
     path('home/professor/', professor_home, name='professor_home'),
     path('interests/', StudentInterestsView.as_view(), name='student_interests'),

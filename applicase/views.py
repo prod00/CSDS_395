@@ -23,6 +23,7 @@ def home(request):
 class SignUpView(TemplateView):
     template_name = 'registration/signup.html'
 
+
 @student_required
 def student_home(request):
     professor_posts = TAPositionPost.objects.all().order_by('-date_posted')
@@ -87,6 +88,7 @@ def student_home(request):
 
     }
     return render(request, 'applicase/student_home.html', context)
+    # return render(request, 'applicase/index.html', context)
 
 @professor_required
 def professor_home(request):

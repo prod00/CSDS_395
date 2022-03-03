@@ -1,87 +1,52 @@
 {% extends 'applicase/base.html' %}
 
-
+{% load static%}
 
 {% block content %}
-    <style>
-        .collapsible {
-          background-color: lightblue;
-          color: #444;
-          cursor: pointer;
-          padding: 5px;
-          width: 100%;
-          border: 2px solid black;
-          text-align: center;
-          outline: none;
-          font-size: 18px;
-                border-radius: 5px;
-        }
-        .applied {
-          background-color: greenyellow;
-          color: #444;
-          cursor: pointer;
-          padding: 5px;
-          width: 100%;
-          border: 2px solid black;
-          text-align: center;
-          outline: none;
-          font-size: 18px;
-                border-radius: 5px;
-        }
 
-   .active, .collapsible:hover {
-      background-color: greenyellow;
-    }
+    <div class="pagetitle">
+      <h1>TA Posts Filtered For You</h1>
 
-    /* Style the collapsible content. Note: hidden by default */
-    .content {
-      padding: 0 18px;
-      display: none;
-      overflow: hidden;
-      background-color: #f1f1f1;
-        border-radius: 5px;
+    </div><!-- End Page Title -->
+    <section class="section dashboard">
+      <div class="row">
 
-    }
-    .post {
-        background-color: whitesmoke;
-        width: 98%;
-        border: 2px solid black;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 5px;
-    }
-    </style>
-    <div class="post">
-        <h2>Account Information</h2>
-        <hr>
-        <p>Name: {{user.first_name}} {{user.last_name}} </p>
-        <p>Case ID: {{ user.username }}</p>
-        <p>Interests: <a href="{% url 'student_interests' %}">{% for subject in user.student.interests.all %} {{ subject.get_html_badge }}{% endfor %}</a></p>
-        <p>Year: {% for year in user.student.year.all %} {{ year }}{% endfor %}</p>
-    </div>
-    <br>
-    <h3 style="text-align: center;"> TA Posts Filtered For You</h3>
-    <br>
-    <div>
-    {% for post in posts %}
-        <div class="post">
-            <h4 style="text-align: center">{{ post.section }}</h4>
-            <hr>
-            <p>{{ post.description }}</p>
-            <br>
-            <i>Posted by {{ post.user.get_full_name }} on {{ post.date_posted }}</i>
-            <hr>
-            <button type="button" class="collapsible">APPLICATION</button>
-            <div class="content">
-                <form method="POST" enctype="multipart/form-data" action="/home/student/">
-                    {% csrf_token %}
-                    {{ta_application_form.as_ul}}
-                    <input type="submit" value="apply" name="post_id{{ post.id }}">
-                </form>
-            </div>
-        </div>
-        <br>
-    {% endfor %}
+        <!-- Left side columns -->
+{#          <div class="card info-card sales-card">#}
+                {% for post in posts %}
+                    <div class="col-sm-4">
+
+                    <div class="card info-card sales-card">
+{#                        <h4 style="text-align: center">{{ post.section }}</h4>#}
+                        <div class="card-body">
+                        <h5 class="card-title">{{ post.section }}</h5>
+
+                        <div class="d-flex align-items-center">
+                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                              <i class="bi bi-people"></i>
+                            </div>
+                            <div class="ps-3">
+                              <h6><p>{{ post.description }}</p></h6>
+                              <span class="text-success small pt-1 fw-bold">Posted by {{ post.user.get_full_name }}</span> <span class="text-muted small pt-2 ps-1"><i>on {{ post.date_posted }}</i></span>
+
+                            </div>
+                        </div>
+
+                        <button type="button" class="collapsible">APPLICATION</button>
+                        <div class="content">
+                            <form method="POST" enctype="multipart/form-data" action="/home/student/">
+                                {% csrf_token %}
+                                {{ta_application_form.as_ul}}
+                                <input type="submit" value="apply" name="post_id{{ post.id }}">
+                            </form>
+                        </div>
+                        </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+      </div>
+    </section>
     {% for application in applications %}
         <div class="post">
             <h4 style="text-align: center">{{ application.position.section }}</h4>
@@ -107,34 +72,38 @@
     {% endfor %}
 </div>
     <script>
-var coll = document.getElementsByClassName("collapsible");
-var i;
 
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
+
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
     }
-  });
+
+    var coll2 = document.getElementsByClassName("applied");
+    var j;
+
+    for (j = 0; j < coll2.length; j++) {
+      coll2[j].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
 }
 
-var coll2 = document.getElementsByClassName("applied");
-var j;
 
-for (j = 0; j < coll2.length; j++) {
-  coll2[j].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-  });
-}
-</script>
+    </script>
 {% endblock %}
