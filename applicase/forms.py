@@ -10,11 +10,7 @@ class StudentSignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=50)
     last_name = forms.CharField(max_length=50)
     case_id = forms.CharField(max_length=10)
-    interests = forms.ModelMultipleChoiceField(
-        queryset=Subject.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=True
-    )
+
 
     year = forms.ModelChoiceField(
         queryset=StudentYear.objects.all(),
@@ -34,7 +30,6 @@ class StudentSignUpForm(UserCreationForm):
         user.username = self.cleaned_data.get('case_id')
         user.save()
         student = Student.objects.create(user=user)
-        student.interests.add(*self.cleaned_data.get('interests'))
         student.year.add(self.cleaned_data.get('year'))
         return user
 
