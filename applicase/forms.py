@@ -76,12 +76,12 @@ class StudentYearForm(forms.ModelForm):
             'year': forms.CheckboxInput
         }
 
-class TAPositionPostForm(forms.Form):
-    section = forms.CharField(max_length=9, label="Section (ex. MATH 101):")
-    description = forms.CharField(widget=forms.Textarea)
-    class Meta:
-        model = TAPositionPost
-        fields = ['section', 'description']
+# class TAPositionPostForm(forms.Form):
+#     section = forms.CharField(max_length=9, label="Section (ex. MATH 101):")
+#     description = forms.CharField(widget=forms.Textarea)
+#     class Meta:
+#         model = TAPositionPost
+#         fields = ['section', 'description']
 
 class TAApplicationForm(forms.Form):
     GRADE_TYPES = [

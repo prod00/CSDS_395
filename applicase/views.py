@@ -9,8 +9,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .decorators import student_required, professor_required
-from .forms import StudentSignUpForm, ProfessorSignUpForm, StudentInterestsForm, TAPositionPostForm, TAApplicationForm
-from .models import User, Student, Professor, TAPositionPost, TAApplication
+from .forms import StudentSignUpForm, ProfessorSignUpForm, StudentInterestsForm, TAApplicationForm
+from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses
 
 def home(request):
     if request.user.is_authenticated:
@@ -92,11 +92,13 @@ def student_home(request):
 
 @professor_required
 def professor_home(request):
-    ta_post_form = TAPositionPostForm()
+    classes = Courses.objects.all()
+    #ta_post_form = TAPositionPostForm()
     professor_posts = TAPositionPost.objects.filter(user=request.user).order_by('-date_posted')
     context = {
-        'ta_post_form': ta_post_form,
+        #'ta_post_form': ta_post_form,
         'posts': professor_posts,
+        'classes': classes,
     }
     return render(request, 'applicase/professor_home.html', context)
 
@@ -146,27 +148,29 @@ class StudentInterestsView(UpdateView):
         return super().form_valid(form)
 
 def ta_post_submit(request):
-    position_form = TAPositionPostForm(request.POST)
+    #position_form = TAPositionPostForm(request.POST)
     if request.method == 'POST':
-        if position_form.is_valid():
-            section = position_form.cleaned_data['section']
-            description = position_form.cleaned_data['description']
-            print(section, description)
-            user = request.user
-            new_position = TAPositionPost.objects.create(section=section, description=description, user=user)
-            new_position.save()
-            messages.success(request, 'The TA position has been posted!')
+        print(request.POST)
+        section = request.POST['classes']
+        description = request.POST['description']
+        user = request.user
+        new_position = TAPositionPost.objects.create(section=section, description=description, user=user)
+        new_position.save()
+        messages.success(request, 'The TA position has been posted!')
 
-            return redirect('professor_home')
+        return redirect('professor_home')
 
-    else:
-        ta_post_form = TAPositionPostForm()
-        return render(request, 'applicase/professor_home.html', {'ta_post_form': ta_post_form})
 
 @professor_required
 def ta_applications(request, pk=1):
+
     ta_apps = TAApplication.objects.filter(position__user=request.user, position_id=pk).order_by('-date_applied')
     post = TAPositionPost.objects.get(pk=pk)
     context = {"applications": ta_apps,
-               "post": post}
+               "post": post,}
     return render(request, 'applicase/professor_TAapplications.html', context)
+
+# def ta_application_modal(request, pk=1):
+#     classes = Courses.objects.all()
+#     context = {"classes": classes}
+#     return render(request, 'applicase/createTApostmodal.html', context)
