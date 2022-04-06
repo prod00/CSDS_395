@@ -1,3 +1,4 @@
+from urllib import request
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,7 @@ from django.views.generic import CreateView, ListView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .decorators import student_required, professor_required
 from .forms import StudentSignUpForm, ProfessorSignUpForm, StudentInterestsForm, TAApplicationForm
-from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses
+from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments
 
 def home(request):
     if request.user.is_authenticated:
@@ -133,19 +134,14 @@ class ProfessorSignUpView(CreateView):
         login(self.request, form.save())
         return redirect('professor_home')
 
-@method_decorator([login_required, student_required], name='dispatch')
-class StudentInterestsView(UpdateView):
-    model = Student
-    form_class = StudentInterestsForm
-    template_name = 'applicase/interests_form.html'
-    success_url = reverse_lazy('student_home')
+def StudentInterestsView(request):
+    departments = Departments.objects.all()
+    print(departments)
+    context = {
+        'departments': departments,
+    }
+    return render(request, 'applicase/interests_form.html', context)
 
-    def get_object(self):
-        return self.request.user.student
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Interests updated with success!')
-        return super().form_valid(form)
 
 def ta_post_submit(request):
     #position_form = TAPositionPostForm(request.POST)

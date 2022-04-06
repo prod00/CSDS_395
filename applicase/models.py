@@ -101,7 +101,7 @@ class MajorMinor(models.Model):
         return self.name
 
 class Departments(models.Model):
-    department = models.CharField(max_length=45)
+    department = models.CharField(max_length=45, primary_key=True)
     
     def _str_(self):
         return self.name
