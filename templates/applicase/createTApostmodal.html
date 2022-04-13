@@ -8,13 +8,27 @@
       <h2 style="text-align: center">Teaching Assistant</h2><hr>
     <form method="POST" enctype="multipart/form-data" action="/professor/ta-post/">
         {% csrf_token %}
-        <div> {{ta_post_form.as_p}} </div> <br>
+        <label for="section">Section: </label>
+        <input type="text" name="classes" id="section" list="items" style="width: 100%" required>
+        <datalist id="items">
+            {% for class in classes %}
+                <option> {{ class.code }} {{ class.name }} </option>
+            {% endfor %}
+
+        </datalist>
+        <br>
+        <br>
+        <label for="textarea">Description: </label>
+        <textarea name="description" id="textarea" style="width: 100%" required></textarea>
+
+
         <input type="submit" value="submit">
     </form>
   </div>
 
 </div>
 <script>
+
 // Get the modal
 var modal = document.getElementById("myModal");
 
