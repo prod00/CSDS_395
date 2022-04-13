@@ -16,15 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
-from applicase.views import StudentSignUpView, ProfessorSignUpView, SignUpView, StudentInterestsView, student_home, \
-    professor_home, home, studentuniqueID, ta_post_submit, ta_applications
+from applicase.views import SignUpView, StudentInterestsView, student_home, \
+    professor_home, home, studentuniqueID, ta_post_submit, ta_applications, is_student, is_professor
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/googlesignin/', include("social_django.urls"),name = "social"),
+    path('accounts/googlesignin/', include('allauth.urls'), name='google'),
     path('accounts/signup/', SignUpView.as_view(), name='signup'),
-    path('accounts/signup/student/', StudentSignUpView.as_view(), name='student_signup'),
-    path('accounts/signup/professor/', ProfessorSignUpView.as_view(), name='professor_signup'),
+    path('accounts/signup/student/', is_student, name='student_signup'),
+    path('accounts/signup/professor/', is_professor, name='professor_signup'),
     path('accounts/profile/', home, name='login_redirect'),
     path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name="logout"),
     path('', home, name='home'),
