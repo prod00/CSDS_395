@@ -28,9 +28,6 @@ class SignUpView(TemplateView):
     template_name = 'registration/signup.html'
 
 
-def google(request):
-    return render(request, 'applicase/google.html', {})
-
 
 @student_required
 def student_home(request):
