@@ -168,7 +168,6 @@ def is_professor(request):
 
 def StudentInterestsView(request):
     departments = Departments.objects.all().order_by('department')
-    print(departments)
     context = {
         'departments': departments,
     }
@@ -206,3 +205,6 @@ def ta_applications(request, pk=1):
 #     context = {"classes": classes}
 #     return render(request, 'applicase/createTApostmodal.html', context)
 
+def student_interest_update(request):
+    print(request.POST.getlist("interests"))
+    return redirect('student_home')
