@@ -59,6 +59,17 @@ class TAPositionPost(models.Model):
     def __str__(self):
         return self.section
 
+class RAPositionPost(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_posted = models.DateTimeField(default=timezone.now)
+
+    title = models.CharField(max_length=100)  # e.g.
+    department = models.CharField(max_length=100)
+    key_words = models.CharField(max_length=500)  # this will be a list of easily searchable words to filter for students
+    description = models.TextField()
+
+    def __str__(self):
+        return self.title
 
 class TAApplication(models.Model):
     user = models.ForeignKey(Student, on_delete=models.CASCADE)

@@ -10,19 +10,25 @@ from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, UpdateView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .decorators import student_required, professor_required
-from .forms import StudentSignUpForm, ProfessorSignUpForm, StudentInterestsForm, TAApplicationForm
-from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments
+
+from .forms import  StudentInterestsForm, TAApplicationForm
+from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses
+
 
 def home(request):
     if request.user.is_authenticated:
         if request.user.is_student:
             return redirect('student_home')
-        else:
+        elif request.user.is_professor:
             return redirect('professor_home')
-    return render(request, 'registration/signup.html')
+        else:
+            return render(request, 'registration/signup.html')
+    else:
+        return render(request, 'applicase/landing_page.html')
 
 class SignUpView(TemplateView):
     template_name = 'registration/signup.html'
+
 
 
 @student_required
@@ -52,7 +58,7 @@ def student_home(request):
     if request.method == 'POST':
         for key, value in request.POST.items():
             if 'post_id' in key:
-                post_id = key.replace('post_id','')
+                post_id = key.replace('post_id', '')
                 applied = True
         if applied:
             new_ta_application_form = TAApplicationForm(request.POST)
@@ -71,25 +77,25 @@ def student_home(request):
                 comment = new_ta_application_form.cleaned_data['comment']
 
                 new_application = TAApplication.objects.create(user=user,
-                                                                position=position,
-                                                                taken=taken,
-                                                                grade=grade,
-                                                                year=year,
-                                                                semester=semester,
-                                                                professor=professor,
-                                                                comment=comment)
+                                                               position=position,
+                                                               taken=taken,
+                                                               grade=grade,
+                                                               year=year,
+                                                               semester=semester,
+                                                               professor=professor,
+                                                               comment=comment)
                 new_application.save()
-                messages.success(request, 'The TA application for '+str(position.section)+' has been sent!')
+                messages.success(request, 'The TA application for ' + str(position.section) + ' has been sent!')
                 return redirect('student_home')
     context = {
         'posts': posts,
         'ta_application_form': ta_application_form,
         'applications': applications,
 
-
     }
     return render(request, 'applicase/student_home.html', context)
     # return render(request, 'applicase/index.html', context)
+
 
 @professor_required
 def professor_home(request):
@@ -103,36 +109,62 @@ def professor_home(request):
     }
     return render(request, 'applicase/professor_home.html', context)
 
-class StudentSignUpView(CreateView):
-    model = User
-    form_class = StudentSignUpForm
-    template_name = 'registration/signup_form.html'
 
-    def get_context_data(self, **kwargs):
-        kwargs['user_type'] = 'student'
-        return super().get_context_data(**kwargs)
+# class StudentSignUpView(CreateView):
+#     model = User
+#     template_name = 'registration/signup_form.html'
+#
+#     def get_context_data(self, **kwargs):
+#         kwargs['user_type'] = 'student'
+#         return super().get_context_data(**kwargs)
+#
+#     def form_valid(self, form):
+#         user = form.save()
+#         login(self.request, user)
+#         return redirect('student_home')
 
-    def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
-        return redirect('student_home')
 
 def studentuniqueID(request):
     messages.success(request, 'Case ID must be unique')
     return redirect('student_signup')
 
-class ProfessorSignUpView(CreateView):
-    model = User
-    form_class = ProfessorSignUpForm
-    template_name = 'registration/signup_form.html'
 
-    def get_context_data(self, **kwargs):
-        kwargs['user_type'] = 'professor'
-        return super().get_context_data(**kwargs)
+def is_student(request):
+    user = request.user
+    new_user = Student(user=user, first_name=user.first_name, last_name=user.last_name,
+                                      case_id=user.username)
 
-    def form_valid(self, form):
-        login(self.request, form.save())
-        return redirect('professor_home')
+    user.is_student = True
+    user.is_professor = False
+    user.save()
+    new_user.save()
+    print(user.is_student)
+    return redirect('student_home')
+
+
+def is_professor(request):
+    user = request.user
+    new_professor = Professor(user=user, first_name=user.first_name, last_name=user.last_name,
+                                        case_id=user.username)
+    user.is_professor = True
+    user.is_student = False
+    user.save()
+    new_professor.save()
+    return redirect('professor_home')
+
+
+# class ProfessorSignUpView(CreateView):
+#     model = User
+#     form_class = ProfessorSignUpForm
+#     template_name = 'registration/signup_form.html'
+#
+#     def get_context_data(self, **kwargs):
+#         kwargs['user_type'] = 'professor'
+#         return super().get_context_data(**kwargs)
+#
+#     def form_valid(self, form):
+#         login(self.request, form.save())
+#         return redirect('professor_home')
 
 def StudentInterestsView(request):
     departments = Departments.objects.all()
@@ -141,6 +173,7 @@ def StudentInterestsView(request):
         'departments': departments,
     }
     return render(request, 'applicase/interests_form.html', context)
+
 
 
 def ta_post_submit(request):
@@ -157,16 +190,19 @@ def ta_post_submit(request):
         return redirect('professor_home')
 
 
+
 @professor_required
 def ta_applications(request, pk=1):
 
     ta_apps = TAApplication.objects.filter(position__user=request.user, position_id=pk).order_by('-date_applied')
     post = TAPositionPost.objects.get(pk=pk)
     context = {"applications": ta_apps,
-               "post": post,}
+               "post": post}
     return render(request, 'applicase/professor_TAapplications.html', context)
+
 
 # def ta_application_modal(request, pk=1):
 #     classes = Courses.objects.all()
 #     context = {"classes": classes}
 #     return render(request, 'applicase/createTApostmodal.html', context)
+
