@@ -35,9 +35,10 @@
     var select = document.getElementById('interest');
     var value = select.options[select.selectedIndex].value;
     if(!interestSet.has(value)){
-      interestSet.add(value);
+      valueNoApostrophe = value.replace("'","")
+      interestSet.add(valueNoApostrophe);
       interestList.innerHTML = interestList.innerHTML +
-      `<p id="${value}"> ${value} <button onclick="removeInterest('${value}')">Remove interest</button></p>`;
+      `<p id="${valueNoApostrophe}"> ${value} <button onclick="removeInterest('${valueNoApostrophe}')">Remove interest</button></p>`;
     }
   }
 
