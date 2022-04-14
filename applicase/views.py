@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .decorators import student_required, professor_required
 
 from .forms import  StudentInterestsForm, TAApplicationForm
-from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses
+from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments
 
 
 def home(request):
@@ -167,7 +167,7 @@ def is_professor(request):
 #         return redirect('professor_home')
 
 def StudentInterestsView(request):
-    departments = Departments.objects.all()
+    departments = Departments.objects.all().order_by('department')
     print(departments)
     context = {
         'departments': departments,

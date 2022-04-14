@@ -3,17 +3,49 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-  <h2 class="mb-3">Update your interests</h2>
-  <form method="post" novalidate>
-    {% csrf_token %}
-    <label for="section">Interests: </label>
-    <input type="text" list="items" style="width: 100%">
-    <datalist id="items">
-        {% for department in departments %}
-            <option> {{ department.department }} </option>
-        {% endfor %}
-    </datalist>
-    <button type="submit" class="btn btn-success">Save changes</button>
-    <a href="{% url 'student_home' %}" class="btn btn-outline-secondary">Nevermind</a>
-  </form>
+<h2 class="mb-3">Update your interests</h2>
+<label for="section">Interests: </label>
+<br>
+<div>
+  <select id="interest">
+    {% for department in departments %}
+    <option> {{ department.department }} </option>
+    {% endfor %}
+  </select>
+  <button id="addInterest">Add interest</button>
+</div>
+<div id="interestList"></div>
+<form method="post" novalidate>
+  {% csrf_token %}
+  <button type="submit" class="btn btn-success">Save changes</button>
+  <a href="{% url 'student_home' %}" class="btn btn-outline-secondary">Nevermind</a>
+</form>
+<script>
+  // Get the button that adds interest:
+  var addInterest = document.getElementById("addInterest");
+
+  // Get the list of interest to be displayed on page:
+  var interestList = document.getElementById("interestList");
+
+  //Create a set of Interests:
+  var interestSet = new Set();
+
+  // When the user clicks the button, add the interest to the page:
+  addInterest.onclick = function () {
+    var select = document.getElementById('interest');
+    var value = select.options[select.selectedIndex].value;
+    if(!interestSet.has(value)){
+      interestSet.add(value);
+      interestList.innerHTML = interestList.innerHTML +
+      `<p id="${value}"> ${value} <button onclick="removeInterest('${value}')">Remove interest</button></p>`;
+    }
+  }
+
+  // Function to remove a interest from page:
+  function removeInterest(interest){
+    var interestParagraphTag = document.getElementById(interest);
+    interestParagraphTag.remove();
+    interestSet.delete(interest);
+  }
+</script>
 {% endblock %}
