@@ -14,9 +14,17 @@
   </select>
   <button id="addInterest">Add interest</button>
 </div>
-<div id="interestList"></div>
+<div id="interestList">
+  {% for interest in interests%}
+  <p id="{{ interest.interest }}"> {{ interest.interest }} <button
+      onclick='removeInterest("{{ interest.interest }}")'>Remove interest</button></p>
+  {% endfor %}
+</div>
 <form method="post" novalidate action="/student/interest-update/" id="post">
   {% csrf_token %}
+  {% for interest in interests%}
+  <input type="hidden" name="interests" value="{{ interest.interest }}" id="{{ interest.interest }}Input" required />
+  {% endfor %}
   <button type="submit" value="submit" class="btn btn-success">Save changes</button>
   <a href="{% url 'student_home' %}" class="btn btn-outline-secondary">Nevermind</a>
 </form>
@@ -29,25 +37,30 @@
 
   //Create a set of Interests:
   var interestSet = new Set();
+  var interestListChildren = Array.from(interestList.children);
+  var currentInterests = interestListChildren.map(element => {
+    return element.id;
+  });
+  currentInterests.forEach(interest => interestSet.add(interest));
 
   // When the user clicks the button, add the interest to the page:
   addInterest.onclick = function () {
     var select = document.getElementById('interest');
     var value = select.options[select.selectedIndex].value;
-    if(!interestSet.has(value)){
-      valueNoApostrophe = value.replace("'","")
+    if (!interestSet.has(value)) {
+      valueNoApostrophe = value.replace("'", "")
       interestSet.add(valueNoApostrophe);
       interestList.innerHTML = interestList.innerHTML +
-      `<p id="${valueNoApostrophe}"> ${value} <button onclick="removeInterest('${valueNoApostrophe}')">Remove interest</button></p>`;
+        `<p id="${valueNoApostrophe}"> ${value} <button onclick="removeInterest('${valueNoApostrophe}')">Remove interest</button></p>`;
       var post = document.getElementById('post');
       post.innerHTML = post.innerHTML + `<input type="hidden" name="interests" value="${value}" id="${value}Input" required/>`;
     }
   }
 
   // Function to remove a interest from page:
-  function removeInterest(interest){
+  function removeInterest(interest) {
     document.getElementById(interest).remove();
-    document.getElementById(interest+"Input").remove();
+    document.getElementById(interest + "Input").remove();
     interestSet.delete(interest);
   }
 </script>

@@ -116,3 +116,13 @@ class Departments(models.Model):
     
     def _str_(self):
         return self.name
+
+class StudentInterests(models.Model):
+    username = models.CharField(max_length=150)
+    interest = models.CharField(max_length=45)
+
+    class Meta:
+        unique_together = ('username', 'interest',)
+
+    def _str_(self):
+        return self.name

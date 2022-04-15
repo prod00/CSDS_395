@@ -12,7 +12,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .decorators import student_required, professor_required
 
 from .forms import  StudentInterestsForm, TAApplicationForm
-from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments
+from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments, StudentInterests
 
 
 def home(request):
@@ -168,8 +168,10 @@ def is_professor(request):
 
 def StudentInterestsView(request):
     departments = Departments.objects.all().order_by('department')
+    currentInterests = StudentInterests.objects.filter(username = request.user.username)
     context = {
         'departments': departments,
+        'interests': currentInterests
     }
     return render(request, 'applicase/interests_form.html', context)
 
@@ -206,5 +208,10 @@ def ta_applications(request, pk=1):
 #     return render(request, 'applicase/createTApostmodal.html', context)
 
 def student_interest_update(request):
-    print(request.POST.getlist("interests"))
+    interests = request.POST.getlist("interests")
+    oldInterests = StudentInterests.objects.filter(username = request.user.username)
+    oldInterests.delete()
+    for interest in interests:
+        new_interest = StudentInterests.objects.create(username = request.user.username, interest = interest)
+        new_interest.save()
     return redirect('student_home')
