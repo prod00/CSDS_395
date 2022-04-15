@@ -194,13 +194,16 @@ def ta_post_submit(request):
         section = request.POST['classes']
         description = request.POST['description']
         courseCode = section.split(":")[0].strip()
-        department = Courses.objects.filter(code = courseCode).values("department")[0]['department'].strip()
         user = request.user
-        new_position = TAPositionPost.objects.create(section=section, description=description, user=user, department = department)
-        new_position.save()
-        messages.success(request, 'The TA position has been posted!')
-
-        return redirect('professor_home')
+        if Courses.objects.filter(code = courseCode).exists():
+            department = Courses.objects.filter(code = courseCode).values("department")[0]['department'].strip()
+            new_position = TAPositionPost.objects.create(section=section, description=description, user=user, department = department)
+            new_position.save()
+        else:
+            new_position = TAPositionPost.objects.create(section=section, description=description, user=user)
+            new_position.save()
+    messages.success(request, 'The TA position has been posted!')
+    return redirect('professor_home')
 
 
 
