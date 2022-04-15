@@ -55,6 +55,7 @@ class TAPositionPost(models.Model):
 
     section = models.CharField(max_length=9)  # e.g. CSDS 492
     description = models.TextField()
+    department = models.CharField(max_length=45, default="other")
 
     def __str__(self):
         return self.section

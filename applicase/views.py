@@ -39,11 +39,14 @@ def student_home(request):
     user_interests = []
     posts = []
     applications = []
-    for interest in request.user.student.interests.get_queryset():
-        user_interests.append(interest.section)
+    interests = StudentInterests.objects.filter(username = request.user.username).values("interest")
+    for interest in interests:
+        interest = list(interest.values())[0]
+        user_interests.append(interest)
+
     for post in professor_posts:
         for ui in user_interests:
-            if ui in post.section:
+            if ui in post.department:
                 posts.append(post)
 
     for app in student_applications:
