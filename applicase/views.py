@@ -14,6 +14,9 @@ from .decorators import student_required, professor_required
 from .forms import  StudentInterestsForm, TAApplicationForm
 from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments, StudentInterests
 
+# Global variable needed to get show all posts feature to work
+showall = False
+
 
 def home(request):
     if request.user.is_authenticated:
@@ -44,10 +47,14 @@ def student_home(request):
         interest = list(interest.values())[0]
         user_interests.append(interest)
 
-    for post in professor_posts:
-        for ui in user_interests:
-            if ui in post.department:
-                posts.append(post)
+    if showall:
+        for post in professor_posts:
+            posts.append(post)
+    else:
+        for post in professor_posts:
+            for ui in user_interests:
+                if ui in post.department:
+                    posts.append(post)
 
     for app in student_applications:
         for post in posts:
@@ -174,7 +181,8 @@ def StudentInterestsView(request):
     currentInterests = StudentInterests.objects.filter(username = request.user.username)
     context = {
         'departments': departments,
-        'interests': currentInterests
+        'interests': currentInterests,
+        'showAll': showall
     }
     return render(request, 'applicase/interests_form.html', context)
 
@@ -211,6 +219,8 @@ def ta_applications(request, pk=1):
 #     return render(request, 'applicase/createTApostmodal.html', context)
 
 def student_interest_update(request):
+    global showall
+    showall = eval(request.POST.getlist("showAll")[0])
     interests = request.POST.getlist("interests")
     oldInterests = StudentInterests.objects.filter(username = request.user.username)
     oldInterests.delete()

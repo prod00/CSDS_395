@@ -4,27 +4,39 @@
 
 {% block content %}
 <h2 class="mb-3">Update your interests</h2>
-<label for="section">Interests: </label>
+<label for="section">See all posts: </label>
 <br>
-<div>
-  <select id="interest">
-    {% for department in departments %}
-    <option> {{ department.department }} </option>
+<div value = "{{showAll}}" id ="currentShowAll"></div>
+<label class="switch">
+  <input type="checkbox" onchange="toggle()" id = "showAllSwitch">
+  <span class="slider round"></span>
+</label>
+<br><br>
+<div id = "interestSection">
+  <label for="section">Interests: </label>
+  <br>
+  <div>
+    <select id="interest">
+      {% for department in departments %}
+      <option> {{ department.department }} </option>
+      {% endfor %}
+    </select>
+    <button id="addInterest">Add interest</button>
+  </div>
+  <div id="interestList">
+    {% for interest in interests%}
+    <p id="{{ interest.interest }}"> {{ interest.interest }} <button
+        onclick='removeInterest("{{ interest.interest }}")'>Remove interest</button></p>
     {% endfor %}
-  </select>
-  <button id="addInterest">Add interest</button>
+  </div>
 </div>
-<div id="interestList">
-  {% for interest in interests%}
-  <p id="{{ interest.interest }}"> {{ interest.interest }} <button
-      onclick='removeInterest("{{ interest.interest }}")'>Remove interest</button></p>
-  {% endfor %}
-</div>
+<br>
 <form method="post" novalidate action="/student/interest-update/" id="post">
   {% csrf_token %}
   {% for interest in interests%}
   <input type="hidden" name="interests" value="{{ interest.interest }}" id="{{ interest.interest }}Input" required />
   {% endfor %}
+  <input type="hidden" name="showAll" id = "showAll" required />
   <button type="submit" value="submit" class="btn btn-success">Save changes</button>
   <a href="{% url 'student_home' %}" class="btn btn-outline-secondary">Nevermind</a>
 </form>
@@ -42,6 +54,22 @@
     return element.id;
   });
   currentInterests.forEach(interest => interestSet.add(interest));
+
+  //Default have response say don't show all posts:
+  document.getElementById("showAll").value = "False";
+
+  //Show interest section based on if user currently has show all posts enabled:
+  showAllCurrent = document.getElementById("currentShowAll").getAttribute("value");
+  var interestSection = document.getElementById("interestSection");
+  var showALL = document.getElementById("showAll");
+  if(showAllCurrent === "True"){
+    interestSection.style.display = "none";
+    showAll.value = "True";
+    document.getElementById("showAllSwitch").checked = true;
+  } else {
+    interestSection.style.display = "block";
+    showALL.value = "False";
+  }
 
   // When the user clicks the button, add the interest to the page:
   addInterest.onclick = function () {
@@ -63,5 +91,69 @@
     document.getElementById(interest + "Input").remove();
     interestSet.delete(interest);
   }
+
+  function toggle(){
+    var interestSection = document.getElementById("interestSection");
+    var showALL = document.getElementById("showAll");
+    if(interestSection.style.display === "none"){
+      interestSection.style.display = "block";
+      showALL.value = "False";
+    } else {
+      interestSection.style.display = "none";
+      showAll.value = "True";
+    }
+  }
 </script>
+<style>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: rgb(113, 127, 245);
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  .slider.round {
+    border-radius: 34px;
+  }
+</style>
 {% endblock %}
