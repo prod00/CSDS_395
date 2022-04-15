@@ -191,11 +191,12 @@ def StudentInterestsView(request):
 def ta_post_submit(request):
     #position_form = TAPositionPostForm(request.POST)
     if request.method == 'POST':
-        print(request.POST)
         section = request.POST['classes']
         description = request.POST['description']
+        courseCode = section.split(":")[0].strip()
+        department = Courses.objects.filter(code = courseCode).values("department")[0]['department'].strip()
         user = request.user
-        new_position = TAPositionPost.objects.create(section=section, description=description, user=user)
+        new_position = TAPositionPost.objects.create(section=section, description=description, user=user, department = department)
         new_position.save()
         messages.success(request, 'The TA position has been posted!')
 

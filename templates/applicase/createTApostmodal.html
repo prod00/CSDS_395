@@ -12,7 +12,7 @@
         <input type="text" name="classes" id="section" list="items" style="width: 100%" required>
         <datalist id="items">
             {% for class in classes %}
-                <option> {{ class.code }} {{ class.name }} </option>
+                <option> {{ class.code }} : {{ class.name }} </option>
             {% endfor %}
 
         </datalist>
