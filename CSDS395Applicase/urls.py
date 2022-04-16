@@ -23,7 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/googlesignin/', include("social_django.urls"),name = "social"),
-    path('accounts/googlesignin/', include('allauth.urls'), name='google'),
     path('accounts/signup/', SignUpView.as_view(), name='signup'),
     path('accounts/signup/student/', is_student, name='student_signup'),
     path('accounts/signup/professor/', is_professor, name='professor_signup'),
