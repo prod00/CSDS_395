@@ -25,6 +25,7 @@ def home(request):
     else:
         return render(request, 'applicase/landing_page.html')
 
+
 class SignUpView(TemplateView):
     template_name = 'registration/signup.html'
 

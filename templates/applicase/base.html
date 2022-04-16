@@ -55,6 +55,7 @@
       <ul class="d-flex align-items-center">
 
 
+
         {% if user.is_authenticated %}
         <li class="nav-item dropdown pe-3">
 
@@ -123,60 +124,49 @@
   </header><!-- End Header -->
 
 
-  <!-- ======= Sidebar ======= -->
-  <aside id="sidebar" class="sidebar">
-
-    <ul class="sidebar-nav" id="sidebar-nav">
-
-      <li class="nav-item">
-          {% if user.is_authenticated %}
-        <a class="nav-link " href="{% url 'home' %}">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
-        </a>
-              {% else %}
-              <a class="nav-link " href="{% url 'social:begin' 'google-oauth2' %}">
-                  <span>Sign Up/Sign In</span>
+  <!-- ======= Student Sidebar ======= -->
+  {% if user.is_student %}
+      <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+          <li class="nav-item"></li>
+                <a class="nav-link " href="{% url 'home' %}">
+                  <i class="bi bi-grid"></i>
+                  <span>TA positions</span>
                 </a>
-          {% endif %}
-      </li><!-- End Dashboard Nav -->
+        </ul>
+      </aside>
 
+  <!-- ======= Professor Sidebar ======= -->
+  {% elif user.is_professor %}
+      <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+          <li class="nav-item"></li>
+                <a class="nav-link " href="{% url 'home' %}">
+                  <i class="bi bi-grid"></i>
+                  <span>Your Posts</span>
+                </a>
+        </ul>
+      </aside>
+  {% endif %}
 
-
-
-
-
-
-    </ul>
-
-  </aside><!-- End Sidebar-->
 
   <main id="main" class="main">
   {% for message in messages %}
-                <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert" style="background-color: lawngreen; border-color: black; text-align: center;">
-                  {{ message }}
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-              {% endfor %}
-      {% block content %}
-    {% endblock %}
+    <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert" style="background-color: lawngreen; border-color: black; text-align: center;">
+      {{ message }}
+        <span aria-hidden="true">&times;</span>
+
+    </div>
+  {% endfor %}
+
+    {% block content %}
+  {% endblock %}
 
   </main><!-- End #main -->
+  {% block no_side %}
+  {% endblock %}
     {% if user.is_authenticated %}
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-    <div class="copyright">
-      &copy; Copyright <strong><span>AppliCase</span></strong>. All Rights Reserved
-    </div>
-    <div class="credits">
-      <!-- All the links in the footer should remain intact. -->
-      <!-- You can delete the links only if you purchased the pro version. -->
-      <!-- Licensing information: https://bootstrapmade.com/license/ -->
-      <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-    </div>
-  </footer><!-- End Footer -->
+
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
