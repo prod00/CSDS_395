@@ -1,6 +1,10 @@
 {% extends 'applicase/base.html' %}
-<h1>Landing Page</h1>
-
-
-
-
+{% block no_side %}
+  <div style="text-align: center; margin-right: 10%; margin-left: 10%">
+    <h3>Vision Statement:</h3><br>
+      <p>We aim to create a better environment not only for the students of the college community, but the professors as well. Oftentimes, professors are actively seeking research students. Additionally, students are always actively seeking opportunities to gain experience and prepare for postgraduate study or employment. With Applicase, we will construct meaningful relationships amongst the student body and professors. Applicase will make opportunities much more accessible than the current structure by providing an organized database of available RA and TA positions, customized to the student's interests. Applicase also uses a centralized “common app” structure to streamline multiple simultaneous applications and, additionally, prevent professors from receiving a deluge of unwanted emails. The application will be similar to ones like LinkedIn and Handshake. The major difference being the nicheness of Applicase being for CWRU RA and TA positions only. This specification of the job allows for very fine-tuned features that CWRU can control. Keeping the website to such a specific goal will keep things very organized for the users, this is the website to check for updates on RA and TA potential positions. This streamlined approach also keeps the site itself more organized. This website will also be free for CWRU and the users with no ads and allow CWRU full control over the site for features they may want to implement.</p>
+    <a class="nav-link " href="{% url 'social:begin' 'google-oauth2' %}" style="background-color: lightskyblue; border: gray 2px solid">
+      <span>Google Sign Up/Sign In</span>
+    </a>
+  </div>
+{% endblock %}
