@@ -1,0 +1,112 @@
+{% extends "applicase/base.html" %}
+{% block content %}
+    {{ room_name|json_script:"room-name" }}
+<body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="script.js"></script>
+<style>
+    .new_message_current{
+        border: 2px black solid;
+        background-color: lightgrey;
+        text-align: right;
+        margin-left: 5%;
+        padding: 2%;
+        border-radius: 10px;
+
+    }
+    .new_message_remote{
+        border: 2px black solid;
+        background-color: lightblue;
+        text-align: left;
+        padding: 2%;
+        margin-right: 10%;
+        border-radius: 10px;
+
+    }
+</style>
+<p id="username" hidden>{{ user.username }}</p>
+        {% for message in messages%}
+            {% if message.author == user %}
+                <div class="new_message_current">
+                    <p> {{ user.first_name }} {{ user.last_name }}: ({{ user.username }})</p><hr>
+                    <p>{{ message.context }}</p>
+                </div>
+                <br>
+            {% endif %}
+            {% if message.author != user %}
+                <div class="new_message_remote">
+                    <p> {{ message.author.first_name }} {{ message.author.last_name }}: ({{ message.author.username }})</p><hr>
+                    <p>{{ message.context }}</p>
+                </div>
+                <br>
+            {% endif %}
+        {% endfor %}
+    <div id="chat-log">
+
+    </div>
+
+    <input id="chat-message-input" type="text" size="100"><br>
+    <input id="chat-message-submit" type="button" value="Send">
+
+    <script>
+
+
+        const roomName = JSON.parse(document.getElementById('room-name').textContent);
+
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + roomName
+            + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            var username = document.getElementById("username").innerText;
+            console.log(username);
+            console.log(data.message.username);
+
+
+            if (data.message.username === username){
+                let new_message_format = "<div style='border: 2px black solid; background-color: lightgrey; text-align: right; margin-left: 5%;\n" +
+                    "        padding: 2%;\n" +
+                    "        border-radius: 10px;'>" + "<p>" + data.message.first_name + " " + data.message.last_name + ": (" + data.message.username + ")"+ "</p>" + "<hr>" + "<p>" + data.message.message + "</p>" + "</div>" + "<br>";
+                console.log(new_message_format);
+                $("#chat-log").append(new_message_format);
+            }
+            else{
+                let new_message_format = "<div style='border: 2px black solid; background-color: lightblue; text-align: left; padding: 2%;\n" +
+                    "        margin-right: 10%;\n" +
+                    "        border-radius: 10px;'>" + "<p>" + data.message.first_name + " " + data.message.last_name + ": (" + data.message.username + ")"+"</p>" + "<hr>" + "<p>" + data.message.message + "</p>" + "</div>" + "<br>";
+                console.log(new_message_format);
+                $("#chat-log").append(new_message_format);
+            }
+
+
+
+
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value;
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInputDom.value = '';
+        };
+    </script>
+</body>
+{% endblock %}

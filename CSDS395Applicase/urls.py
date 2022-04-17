@@ -21,6 +21,7 @@ from applicase.views import SignUpView, StudentInterestsView, student_home, \
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('chat/', include('chat.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/googlesignin/', include("social_django.urls"),name = "social"),
     path('accounts/signup/', SignUpView.as_view(), name='signup'),
