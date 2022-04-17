@@ -1,0 +1,28 @@
+{% extends "applicase/base.html" %}
+{% block content %}
+    <style>
+     body {font-family: Arial, Helvetica, sans-serif;}
+    .chat {
+        background-color: whitesmoke;
+        width: 98%;
+        border: 2px solid black;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 5px;
+    }
+    </style>
+    {% if chats %}
+        <h1>Your Chat Streams</h1>
+    {% for chat in chats %}
+        <div class="chat">
+            <a href="{% url 'room' chat.position.id %}">{{ chat.position }}</a>
+            {% for member in chat.members.all %}
+                <p>{{ member.first_name }} {{ member.last_name }}</p>
+            {% endfor %}
+        </div>
+        <br>
+    {% endfor %}
+    {% else %}
+        <strong style="text-align: center">There are currently no chats</strong>
+    {% endif %}
+{% endblock %}

@@ -1,18 +1,13 @@
 from urllib import request
 from django.contrib import messages
-from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required
-from django.db import transaction
-from django.db.models import Count
+
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.views.generic import CreateView, ListView, UpdateView, TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+from django.views.generic import TemplateView
 from .decorators import student_required, professor_required
 
 from .forms import  StudentInterestsForm, TAApplicationForm
-from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments, StudentInterests
+from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments, StudentInterests, TAPositionChat
 
 # Global variable needed to get show all posts feature to work
 showall = False
@@ -203,6 +198,10 @@ def ta_post_submit(request):
         else:
             new_position = TAPositionPost.objects.create(section=section, description=description, user=user)
             new_position.save()
+
+        new_chat = TAPositionChat.objects.create(position=new_position)
+        new_chat.members.add(request.user)
+        new_chat.save()
     messages.success(request, 'The TA position has been posted!')
     return redirect('professor_home')
 
@@ -233,3 +232,20 @@ def student_interest_update(request):
         new_interest = StudentInterests.objects.create(username = request.user.username, interest = interest)
         new_interest.save()
     return redirect('student_home')
+
+def add_user_to_ta_chat(request, pk):
+    ta_application = TAApplication.objects.get(pk=pk)
+    position_id = ta_application.position.id
+    ta_chat = TAPositionChat.objects.get(position_id=position_id)
+    ta_chat.members.add(ta_application.user.user)
+    ta_chat.save()
+    return redirect("room", str(position_id))
+
+def user_chats(request):
+    user_chat_streams = []
+    for chat in TAPositionChat.objects.all():
+        for member in chat.members.all():
+            if request.user == member:
+                user_chat_streams.append(chat)
+    context = {"chats": user_chat_streams,}
+    return render(request, "applicase/chats.html", context)

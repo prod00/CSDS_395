@@ -133,6 +133,10 @@
                   <i class="bi bi-grid"></i>
                   <span>TA positions</span>
                 </a>
+                <a class="nav-link " href="{% url 'chats' %}">
+                  <i class="bi-grid"></i>
+                  <span>Chats</span>
+                </a>
         </ul>
       </aside>
 
@@ -145,6 +149,10 @@
                   <i class="bi bi-grid"></i>
                   <span>Your Posts</span>
                 </a>
+                <a class="nav-link " href="{% url 'chats' %}">
+                  <i class="bi bi-envelope"></i>
+                  <span>Chats</span>
+                </a>
         </ul>
       </aside>
   {% endif %}
@@ -153,10 +161,12 @@
   <main id="main" class="main">
 
 
+
     {% block content %}
   {% endblock %}
-
   </main><!-- End #main -->
+
+
   {% block no_side %}
   {% endblock %}
     {% if user.is_authenticated %}

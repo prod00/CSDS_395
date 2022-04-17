@@ -2,7 +2,7 @@ import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Message
-from applicase.models import TAApplication
+from applicase.models import TAPositionPost
 from channels.db import database_sync_to_async
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -42,7 +42,6 @@ class ChatConsumer(AsyncWebsocketConsumer, LoginRequiredMixin):
             'last_name': last_name,
 
         }
-        print("REC", message)
         await self.save_message(message, self.scope['user'], self.scope['url_route']['kwargs']['room_name'])
 
         # Send message to room group
@@ -55,10 +54,9 @@ class ChatConsumer(AsyncWebsocketConsumer, LoginRequiredMixin):
         )
 
     @database_sync_to_async
-    def save_message(self, message, author, application_id):
-        application = TAApplication.objects.get(pk=application_id)
-        message = Message.objects.create(context=message, author=author, application=application)
-        print("REC", message)
+    def save_message(self, message, author, position_id):
+        position = TAPositionPost.objects.get(pk=position_id)
+        message = Message.objects.create(context=message, author=author, position=position)
         message.save()
 
     # Receive message from room group
@@ -67,7 +65,6 @@ class ChatConsumer(AsyncWebsocketConsumer, LoginRequiredMixin):
         username = self.scope["user"].username
         first_name = self.scope["user"].first_name
         last_name = self.scope["user"].last_name
-        print(first_name, last_name)
 
         # Send message to WebSocket
         await self.send(text_data=json.dumps({

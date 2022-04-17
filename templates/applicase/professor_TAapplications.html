@@ -21,6 +21,7 @@
             </div>
 
             <i>Applied {{ application.date_applied }}</i>
+            <a href="{% url 'add_chat_member' application.id %}">Add {{ application.user }} To Position Chat</a>
         </div>
         <br>
     {% endfor %}
