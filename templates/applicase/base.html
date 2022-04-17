@@ -151,13 +151,7 @@
 
 
   <main id="main" class="main">
-  {% for message in messages %}
-    <div class="alert {{ message.tags }} alert-dismissible fade show" role="alert" style="background-color: lawngreen; border-color: black; text-align: center;">
-      {{ message }}
-        <span aria-hidden="true">&times;</span>
 
-    </div>
-  {% endfor %}
 
     {% block content %}
   {% endblock %}

@@ -27,7 +27,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+ASGI_APPLICATION = "CSDS395Applicase.asgi.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,9 +48,11 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'crispy_forms',
+    'channels',
 
     'applicase',
     'social_django',
+    'chat',
 ]
 
 MIDDLEWARE = [
