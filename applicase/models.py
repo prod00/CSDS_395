@@ -55,6 +55,7 @@ class TAPositionPost(models.Model):
 
     section = models.CharField(max_length=9)  # e.g. CSDS 492
     description = models.TextField()
+    department = models.CharField(max_length=45, default="other")
 
     def __str__(self):
         return self.section
@@ -109,4 +110,20 @@ class MajorMinor(models.Model):
     is_minor = models.BooleanField()
 
     def __str__(self):
+        return self.name
+
+class Departments(models.Model):
+    department = models.CharField(max_length=45, primary_key=True)
+    
+    def _str_(self):
+        return self.name
+
+class StudentInterests(models.Model):
+    username = models.CharField(max_length=150)
+    interest = models.CharField(max_length=45)
+
+    class Meta:
+        unique_together = ('username', 'interest',)
+
+    def _str_(self):
         return self.name

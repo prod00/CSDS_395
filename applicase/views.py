@@ -1,3 +1,4 @@
+from urllib import request
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -11,7 +12,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .decorators import student_required, professor_required
 
 from .forms import  StudentInterestsForm, TAApplicationForm
-from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses
+from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments, StudentInterests
+
+# Global variable needed to get show all posts feature to work
+showall = False
 
 
 def home(request):
@@ -39,12 +43,19 @@ def student_home(request):
     user_interests = []
     posts = []
     applications = []
-    for interest in request.user.student.interests.get_queryset():
-        user_interests.append(interest.section)
-    for post in professor_posts:
-        for ui in user_interests:
-            if ui in post.section:
-                posts.append(post)
+    interests = StudentInterests.objects.filter(username = request.user.username).values("interest")
+    for interest in interests:
+        interest = list(interest.values())[0]
+        user_interests.append(interest)
+
+    if showall:
+        for post in professor_posts:
+            posts.append(post)
+    else:
+        for post in professor_posts:
+            for ui in user_interests:
+                if ui in post.department:
+                    posts.append(post)
 
     for app in student_applications:
         for post in posts:
@@ -166,33 +177,34 @@ def is_professor(request):
 #         login(self.request, form.save())
 #         return redirect('professor_home')
 
-@method_decorator([login_required, student_required], name='dispatch')
-class StudentInterestsView(UpdateView):
-    model = Student
-    form_class = StudentInterestsForm
-    template_name = 'applicase/interests_form.html'
-    success_url = reverse_lazy('student_home')
+def StudentInterestsView(request):
+    departments = Departments.objects.all().order_by('department')
+    currentInterests = StudentInterests.objects.filter(username = request.user.username)
+    context = {
+        'departments': departments,
+        'interests': currentInterests,
+        'showAll': showall
+    }
+    return render(request, 'applicase/interests_form.html', context)
 
-    def get_object(self):
-        return self.request.user.student
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Interests updated with success!')
-        return super().form_valid(form)
 
 
 def ta_post_submit(request):
     #position_form = TAPositionPostForm(request.POST)
     if request.method == 'POST':
-        print(request.POST)
         section = request.POST['classes']
         description = request.POST['description']
+        courseCode = section.split(":")[0].strip()
         user = request.user
-        new_position = TAPositionPost.objects.create(section=section, description=description, user=user)
-        new_position.save()
-        messages.success(request, 'The TA position has been posted!')
-
-        return redirect('professor_home')
+        if Courses.objects.filter(code = courseCode).exists():
+            department = Courses.objects.filter(code = courseCode).values("department")[0]['department'].strip()
+            new_position = TAPositionPost.objects.create(section=section, description=description, user=user, department = department)
+            new_position.save()
+        else:
+            new_position = TAPositionPost.objects.create(section=section, description=description, user=user)
+            new_position.save()
+    messages.success(request, 'The TA position has been posted!')
+    return redirect('professor_home')
 
 
 
@@ -211,3 +223,13 @@ def ta_applications(request, pk=1):
 #     context = {"classes": classes}
 #     return render(request, 'applicase/createTApostmodal.html', context)
 
+def student_interest_update(request):
+    global showall
+    showall = eval(request.POST.getlist("showAll")[0])
+    interests = request.POST.getlist("interests")
+    oldInterests = StudentInterests.objects.filter(username = request.user.username)
+    oldInterests.delete()
+    for interest in interests:
+        new_interest = StudentInterests.objects.create(username = request.user.username, interest = interest)
+        new_interest.save()
+    return redirect('student_home')
