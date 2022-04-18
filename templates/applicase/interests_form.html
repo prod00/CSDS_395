@@ -3,7 +3,10 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<h2 class="mb-3">Update your interests</h2>
+<div class="col-lg-6">
+<div class="card">
+<div class="card-body">
+  <h5 class="card-title">Update your interests</h5>
 <label for="section">See all posts: </label>
 <br>
 <div value = "{{showAll}}" id ="currentShowAll"></div>
@@ -13,20 +16,24 @@
 </label>
 <br><br>
 <div id = "interestSection">
-  <label for="section">Interests: </label>
-  <br>
-  <div>
-    <select id="interest">
-      {% for department in departments %}
-      <option> {{ department.department }} </option>
-      {% endfor %}
-    </select>
-    <button id="addInterest">Add interest</button>
-  </div>
-  <div id="interestList">
+    <div class="row mb-6">
+                      <label for="section" class="col-sm-4 col-form-label">Interests: </label>
+                      <div class="col-sm-4">
+                        <select id="interest" class="form-select" aria-label="Default select example">
+                          <option selected>...</option>
+                          {% for department in departments %}
+                          <option> {{ department.department }} </option>
+                          {% endfor %}
+                        </select>
+                      <button id="addInterest" type="submit" class="btn btn-primary" style="margin-top: 5px">Add interest</button>
+                      </div>
+    </div>
+
+  <div id="interestList" style="margin-top: 10px">
     {% for interest in interests%}
-    <p id="{{ interest.interest }}"> {{ interest.interest }} <button
-        onclick='removeInterest("{{ interest.interest }}")'>Remove interest</button></p>
+    <p id="{{ interest.interest }}"> {{ interest.interest }} 
+      <a href="javascript:;" onclick='removeInterest("{{ interest.interest }}")' class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+    </p>
     {% endfor %}
   </div>
 </div>
@@ -40,6 +47,12 @@
   <button type="submit" value="submit" class="btn btn-success">Save changes</button>
   <a href="{% url 'student_home' %}" class="btn btn-outline-secondary">Nevermind</a>
 </form>
+</div>
+</div>
+</div>
+
+
+
 <script>
   // Get the button that adds interest:
   var addInterest = document.getElementById("addInterest");
@@ -79,7 +92,9 @@
       valueNoApostrophe = value.replace("'", "")
       interestSet.add(valueNoApostrophe);
       interestList.innerHTML = interestList.innerHTML +
-        `<p id="${valueNoApostrophe}"> ${value} <button onclick="removeInterest('${valueNoApostrophe}')">Remove interest</button></p>`;
+        `<p id="${valueNoApostrophe}"> ${value} 
+        <a href="javascript:;" onclick="removeInterest('${valueNoApostrophe}')" class="btn btn-danger btn-sm" title="Remove my profile image"><i class="bi bi-trash"></i></a>
+        </p>`;
       var post = document.getElementById('post');
       post.innerHTML = post.innerHTML + `<input type="hidden" name="interests" value="${value}" id="${value}Input" required/>`;
     }

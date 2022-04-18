@@ -1,10 +1,63 @@
 {% extends 'applicase/base.html' %}
+{% load crispy_forms_tags %}
+
 {% block no_side %}
-  <div style="text-align: center; margin-right: 10%; margin-left: 10%">
-    <h3>Vision Statement:</h3><br>
-      <p>We aim to create a better environment not only for the students of the college community, but the professors as well. Oftentimes, professors are actively seeking research students. Additionally, students are always actively seeking opportunities to gain experience and prepare for postgraduate study or employment. With Applicase, we will construct meaningful relationships amongst the student body and professors. Applicase will make opportunities much more accessible than the current structure by providing an organized database of available RA and TA positions, customized to the student's interests. Applicase also uses a centralized “common app” structure to streamline multiple simultaneous applications and, additionally, prevent professors from receiving a deluge of unwanted emails. The application will be similar to ones like LinkedIn and Handshake. The major difference being the nicheness of Applicase being for CWRU RA and TA positions only. This specification of the job allows for very fine-tuned features that CWRU can control. Keeping the website to such a specific goal will keep things very organized for the users, this is the website to check for updates on RA and TA potential positions. This streamlined approach also keeps the site itself more organized. This website will also be free for CWRU and the users with no ads and allow CWRU full control over the site for features they may want to implement.</p>
-    <a class="nav-link " href="{% url 'social:begin' 'google-oauth2' %}" style="background-color: lightskyblue; border: gray 2px solid">
-      <span>Google Sign Up/Sign In</span>
-    </a>
-  </div>
+        <div class="container">
+          <div class="row justify-content-center">
+              <a href="" class="logo d-flex align-items-center w-auto">
+              <span class="d-none d-lg-block"></span>
+              </a>
+              <div class="card basic">
+            <div class="card-body">
+              <h5 class="card-title">About Us</h5>
+
+              <div>
+                <p>We aim to create a better environment not only for the students of the college community, but the professors as well. Oftentimes, professors are actively seeking research students. Additionally, students are always actively seeking opportunities to gain experience and prepare for postgraduate study or employment. With Applicase, we will construct meaningful relationships amongst the student body and professors. Applicase will make opportunities much more accessible than the current structure by providing an organized database of available RA and TA positions, customized to the student's interests. Applicase also uses a centralized “common app” structure to streamline multiple simultaneous applications and, additionally, prevent professors from receiving a deluge of unwanted emails. The application will be similar to ones like LinkedIn and Handshake. The major difference being the nicheness of Applicase being for CWRU RA and TA positions only. This specification of the job allows for very fine-tuned features that CWRU can control. Keeping the website to such a specific goal will keep things very organized for the users, this is the website to check for updates on RA and TA potential positions. This streamlined approach also keeps the site itself more organized. This website will also be free for CWRU and the users with no ads and allow CWRU full control over the site for features they may want to implement.</p>
+
+              </div>
+
+            </div>
+          </div>
+
+            <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+              <div class="d-flex justify-content-center py-4">
+                <a href="" class="logo d-flex align-items-center w-auto">
+                  <span class="d-none d-lg-block">AppliCase</span>
+                </a>
+              </div>
+
+              <div class="card mb-3">
+
+                <div class="card-body">
+
+                  <div class="pt-4 pb-2">
+                    <h5 class="card-title text-center pb-0 fs-4">Login to Your Account</h5>
+                    <p class="text-center small">Login Using Google Auth</p>
+                  </div>
+
+                  <form class="row g-3 needs-validation" novalidate>
+                  <div class="col-12">
+                        <a class="col-12 btn btn-outline-dark" href="{% url 'social:begin' 'google-oauth2' %}" role="button" style="text-transform:none">
+                          <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                          Login with Google
+                        </a>
+                  </div>
+                  </form>
+
+                </div>
+              </div>
+
+              <div class="credits">
+                A CWRU CSDS395 Spring 2022 Project
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+<link   rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
 {% endblock %}

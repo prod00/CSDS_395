@@ -1,2 +1,4 @@
 __pycache__/
 db.sqlite3
+applicase/migrations/00*
+chat/migrations/00*
