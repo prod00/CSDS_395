@@ -116,7 +116,7 @@ class Departments(models.Model):
     department = models.CharField(max_length=45, primary_key=True)
     
     def _str_(self):
-        return self.name
+        return self.department
 
 class StudentInterests(models.Model):
     username = models.CharField(max_length=150)
@@ -126,4 +126,14 @@ class StudentInterests(models.Model):
         unique_together = ('username', 'interest',)
 
     def _str_(self):
-        return self.name
+        return self.interest
+
+class TAPositionChat(models.Model):
+    members = models.ManyToManyField(User, related_name="chat_members")
+    position = models.ForeignKey(TAPositionPost, on_delete=models.CASCADE)
+
+    def _str_(self):
+        return self.position
+
+
+
