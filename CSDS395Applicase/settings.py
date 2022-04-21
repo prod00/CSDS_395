@@ -179,3 +179,11 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '989000847263-aupfcpb0svfggua6s0tm1vpl27d1k3k1.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'applicase.help@gmail.com'
+EMAIL_HOST_PASSWORD = 'CSDS395Django'
