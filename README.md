@@ -25,4 +25,6 @@ features they may want to implement.
 4. then "python manage.py makemigrations"
 5. then "python manage.py migrate"
 6. then "python manage.py runserver"
-7. click the link that is displayed in terminal
+7. then "python loadData.py"
+8. tehn "python loadPosts.py"
+9. click the link that is displayed in terminal
