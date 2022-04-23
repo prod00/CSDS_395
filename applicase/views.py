@@ -9,6 +9,9 @@ from .decorators import student_required, professor_required
 from .forms import  TAApplicationForm, RAApplicationForm
 from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments, StudentInterests, TAPositionChat, RAPositionChat, RAPositionPost, RAApplication
 
+from django.conf import settings
+from django.core.mail import send_mail
+
 # Global variable needed to get show all posts feature to work
 showall = False
 
@@ -121,6 +124,12 @@ def student_home(request):
                                                                comment=comment)
                 new_application.save()
                 messages.success(request, 'The TA application for ' + str(position.section) + ' has been sent!')
+                subject = 'New Applicase Response'
+                message = f'Hi Professor {position.user.last_name}, a new student has applied to your ' \
+                          f'{position.section} Teaching Assistant post.'
+                email_from = settings.EMAIL_HOST_USER
+                recipient_list = [position.user.email,]
+                send_mail(subject, message, email_from, recipient_list)
                 return redirect('student_home')
 
         elif ra_app:
