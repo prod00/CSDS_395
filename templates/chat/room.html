@@ -25,7 +25,7 @@
     }
 </style>
 <p id="username" hidden>{{ user.username }}</p>
-<div style="width: 50%" class="container">
+<div style="width: 80%" class="container">
           <div class="row justify-content-center">
     <div class="card basic">
         <div id="chat-log" class="card-body">
@@ -35,24 +35,18 @@
         </a>
         {% for message in messages%}
             {% if message.author == user %}
-                <div class="row justify-content-end">
-                <div style="float: right; text-align: right; width: 20%" class="alert alert-primary alert-dismissible fade show">
+                <div style="float: right; text-align: right; width: 80%" class="alert alert-primary alert-dismissible fade show">
                     <h6 class="alert-heading"><i class="bi bi-file-earmark-person-fill" style="margin-right: 10px"></i> {{ user.first_name }} {{ user.last_name }}</h6>
-                    <p class="mb-0">{{ user.username }}</p>
                     <hr>
                     <p>{{ message.context }}</p>
-                </div>
                 </div>
                 <br>
             {% endif %}
             {% if message.author != user %}
-                <div class="row justify-content-start">
-                <div style="float: left; text-align: left; width: 20%" class="alert alert-secondary alert-dismissible fade show">
-                    <h6 class="alert-heading"><i class="bi bi-file-earmark-person" style="margin-right: 10px"></i> {{ user.first_name }} {{ user.last_name }}</h6>
-                    <p class="mb-0">{{ user.username }}</p>
+                <div style="float: left; text-align: left; width: 80%" class="alert alert-secondary alert-dismissible fade show">
+                    <h6 class="alert-heading"><i class="bi bi-file-earmark-person" style="margin-right: 10px"></i> {{ message.author.first_name }} {{ message.author.last_name }}</h6>
                     <hr>
                     <p>{{ message.context }}</p>
-                </div>
                 </div>
                 <br>
             {% endif %}
@@ -97,27 +91,23 @@
 
             if (data.message.username === username){
                 let new_message_format =
-                    '<div class="row justify-content-end">'
-                    +'<div style="float: right; text-align: right; width: 20%" class="alert alert-primary alert-dismissible fade show">'
-                    + '<h6 class="alert-heading"><i class="bi bi-file-earmark-person-fill" style="margin-right: 10px"></i>' + data.message.first_name + data.message.last_name
+                    '<div style="float: right; text-align: right; width: 80%" class="alert alert-primary alert-dismissible fade show">'
+                    + '<h6 class="alert-heading"><i class="bi bi-file-earmark-person-fill" style="margin-right: 10px"></i>' + data.message.first_name +' '+ data.message.last_name
                     + '</h6>'
-                    + '<p class="mb-0">' + data.message.username + '</p>'
                     + '<hr>'
                     + '<p>' + data.message.message + '</p>'
-                    + '</div>' + '</div>' + '<br>'
+                    + '</div>' + '<br>'
                 console.log(new_message_format);
                 $("#chat-log").append(new_message_format);
             }
             else{
                 let new_message_format =
-                    '<div class="row justify-content-start">'
-                    +'<div style="float: left; text-align: left; width: 20%" class="alert alert-secondary alert-dismissible fade show">'
-                    + '<h6 class="alert-heading"><i class="bi bi-file-earmark-person" style="margin-right: 10px"></i>' + data.message.first_name + data.message.last_name
+                    '<div style="float: left; text-align: left; width: 80%" class="alert alert-secondary alert-dismissible fade show">'
+                    + '<h6 class="alert-heading"><i class="bi bi-file-earmark-person" style="margin-right: 10px"></i>' + data.message.first_name +' '+ data.message.last_name
                     + '</h6>'
-                    + '<p class="mb-0">' + data.message.username + '</p>'
                     + '<hr>'
                     + '<p>' + data.message.message + '</p>'
-                    + '</div>' + '</div>' + '<br>'
+                    + '</div>' + '<br>'
                 console.log(new_message_format);
                 $("#chat-log").append(new_message_format);
             }
