@@ -22,9 +22,9 @@ features they may want to implement.
 1. Clone the directory
 2. cd into CSDS_395 
 3. in terminal run "pip install -r requirements.txt"
-4. then "python manage.py makemigrations"
-5. then "python manage.py migrate"
-6. then "python manage.py runserver"
-7. then "python loadData.py"
-8. tehn "python loadPosts.py"
+4. then "python loadData.py"
+5. tehn "python loadPosts.py"
+6. then "python manage.py makemigrations"
+7. then "python manage.py migrate"
+8. then "python manage.py runserver"
 9. click the link that is displayed in terminal
