@@ -11,5 +11,5 @@ class Message(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        template = 'Author: {0.author}, Application: [{0.application}]'
+        template = 'Author: {0.author}, Position: [{0.position}]'
         return template.format(self)

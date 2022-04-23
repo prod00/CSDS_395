@@ -6,8 +6,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
 from .decorators import student_required, professor_required
 
-from .forms import  StudentInterestsForm, TAApplicationForm
-from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments, StudentInterests, TAPositionChat
+from .forms import  TAApplicationForm, RAApplicationForm
+from .models import User, Student, Professor, TAPositionPost, TAApplication, Courses, Departments, StudentInterests, TAPositionChat, RAPositionChat, RAPositionPost, RAApplication
 
 # Global variable needed to get show all posts feature to work
 showall = False
@@ -32,22 +32,36 @@ class SignUpView(TemplateView):
 
 @student_required
 def student_home(request):
-    professor_posts = TAPositionPost.objects.all().order_by('-date_posted')
+    ta_posts = TAPositionPost.objects.all().order_by('-date_posted')
+    all_ra_posts = RAPositionPost.objects.all().order_by('-date_posted')
+
     student_applications = TAApplication.objects.filter(user=request.user.student).order_by('-date_applied')
+    student_applications_ra = RAApplication.objects.filter(user=request.user.student).order_by('-date_applied')
+
     ta_application_form = TAApplicationForm()
+    ra_application_form = RAApplicationForm()
+
     user_interests = []
+
     posts = []
     applications = []
+
+    ra_posts = []
+    ra_applications = []
+
     interests = StudentInterests.objects.filter(username = request.user.username).values("interest")
     for interest in interests:
         interest = list(interest.values())[0]
         user_interests.append(interest)
 
+    for post in all_ra_posts:
+        ra_posts.append(post)
+
     if showall:
-        for post in professor_posts:
+        for post in ta_posts:
             posts.append(post)
     else:
-        for post in professor_posts:
+        for post in ta_posts:
             for ui in user_interests:
                 if ui in post.department:
                     posts.append(post)
@@ -58,15 +72,30 @@ def student_home(request):
                 applications.append(app)
                 posts.remove(post)
 
-    applied = False
+    for app in student_applications_ra:
+        for ra_post in ra_posts:
+            if ra_post.id == app.position.id:
+                ra_applications.append(app)
+                ra_posts.remove(ra_post)
+
+
+    ta_app = False
+    ra_app = False
     post_id = None
 
     if request.method == 'POST':
         for key, value in request.POST.items():
+            print(key,value)
             if 'post_id' in key:
                 post_id = key.replace('post_id', '')
-                applied = True
-        if applied:
+            if 'message' in key:
+                print("ra")
+                ra_app = True
+            if 'taken' in key:
+                print("ta")
+                ta_app = True
+
+        if ta_app:
             new_ta_application_form = TAApplicationForm(request.POST)
             if new_ta_application_form.is_valid():
                 user = request.user.student
@@ -93,10 +122,28 @@ def student_home(request):
                 new_application.save()
                 messages.success(request, 'The TA application for ' + str(position.section) + ' has been sent!')
                 return redirect('student_home')
+
+        elif ra_app:
+            new_ra_application_form = RAApplicationForm(request.POST)
+            if new_ra_application_form.is_valid():
+                print("making new")
+                user = request.user.student
+                position = RAPositionPost.objects.get(id=int(post_id))
+                message = new_ra_application_form.cleaned_data['message']
+                new_application = RAApplication.objects.create(user=user, position=position, comment=message)
+                new_application.save()
+
+                messages.success(request, 'The RA application for ' + str(position.title) + ' has been sent!')
+                print("created")
+                return redirect('student_home')
+
     context = {
-        'posts': posts,
+        'ta_posts': posts,
+        'ra_posts': ra_posts,
         'ta_application_form': ta_application_form,
-        'applications': applications,
+        'ra_application_form': ra_application_form,
+        'ta_applications': applications,
+        'ra_applications': ra_applications,
 
     }
     return render(request, 'applicase/student_home.html', context)
@@ -106,29 +153,18 @@ def student_home(request):
 @professor_required
 def professor_home(request):
     classes = Courses.objects.all()
-    #ta_post_form = TAPositionPostForm()
-    professor_posts = TAPositionPost.objects.filter(user=request.user).order_by('-date_posted')
+    departments = Departments.objects.all()
+    print(departments.all())
+    ta_professor_posts = TAPositionPost.objects.filter(user=request.user).order_by('-date_posted')
+    ra_professor_posts = RAPositionPost.objects.filter(user=request.user).order_by('-date_posted')
     context = {
         #'ta_post_form': ta_post_form,
-        'posts': professor_posts,
+        'ta_posts': ta_professor_posts,
+        'ra_posts': ra_professor_posts,
         'classes': classes,
+        'departments': departments,
     }
     return render(request, 'applicase/professor_home.html', context)
-
-
-# class StudentSignUpView(CreateView):
-#     model = User
-#     template_name = 'registration/signup_form.html'
-#
-#     def get_context_data(self, **kwargs):
-#         kwargs['user_type'] = 'student'
-#         return super().get_context_data(**kwargs)
-#
-#     def form_valid(self, form):
-#         user = form.save()
-#         login(self.request, user)
-#         return redirect('student_home')
-
 
 def studentuniqueID(request):
     messages.success(request, 'Case ID must be unique')
@@ -205,6 +241,27 @@ def ta_post_submit(request):
     messages.success(request, 'The TA position has been posted!')
     return redirect('professor_home')
 
+def ra_post_submit(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        department = request.POST['department']
+        key_words = request.POST['key_words']
+        description = request.POST['description']
+        user = request.user
+
+        new_position = RAPositionPost.objects.create(user=user,
+                                                     title=title,
+                                                     department=department,
+                                                     key_words=key_words,
+                                                     description=description)
+        new_position.save()
+
+        new_chat = RAPositionChat.objects.create(position=new_position)
+        new_chat.members.add(request.user)
+        new_chat.save()
+    messages.success(request, 'The RA position has been posted!')
+    return redirect('professor_home')
+
 
 
 @professor_required
@@ -217,10 +274,14 @@ def ta_applications(request, pk=1):
     return render(request, 'applicase/professor_TAapplications.html', context)
 
 
-# def ta_application_modal(request, pk=1):
-#     classes = Courses.objects.all()
-#     context = {"classes": classes}
-#     return render(request, 'applicase/createTApostmodal.html', context)
+@professor_required
+def ra_applications(request, pk=1):
+
+    ra_apps = RAApplication.objects.filter(position__user=request.user, position_id=pk).order_by('-date_applied')
+    post = RAPositionPost.objects.get(pk=pk)
+    context = {"applications": ra_apps,
+               "post": post}
+    return render(request, 'applicase/professor_RAapplications.html', context)
 
 def student_interest_update(request):
     global showall
@@ -239,6 +300,14 @@ def add_user_to_ta_chat(request, pk):
     ta_chat = TAPositionChat.objects.get(position_id=position_id)
     ta_chat.members.add(ta_application.user.user)
     ta_chat.save()
+    return redirect("room", str(position_id))
+
+def add_user_to_ra_chat(request, pk):
+    ra_application = RAApplication.objects.get(pk=pk)
+    position_id = ra_application.position.id
+    ra_chat = RAPositionChat.objects.get(position_id=position_id)
+    ra_chat.members.add(ra_application.user.user)
+    ra_chat.save()
     return redirect("room", str(position_id))
 
 def user_chats(request):

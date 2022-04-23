@@ -63,6 +63,15 @@ body {font-family: Arial, Helvetica, sans-serif;}
     bottom: 21px;
     right: 25px;
     z-index: 1;
+}.ra-floating-button {
+    background-color: lightskyblue;
+    height: 40px;
+    width: 120px;
+    border-radius: 10%;
+    position: fixed;
+    bottom: 61px;
+    right: 25px;
+    z-index: 1;
 }
 
 
@@ -74,9 +83,13 @@ body {font-family: Arial, Helvetica, sans-serif;}
 <h2 style="text-align: center">Professor {{ user.last_name }}</h2>
 <br>
 <div>
+    <button class="ra-floating-button" id="raBtn"><strong>RA Position</strong></button>
     <button class="floating-button" id="myBtn"><strong>TA Position</strong></button>
+
 <br>
-    {% for post in posts %}
+{% if ta_posts %}
+    <h2>TA Posts:</h2>
+    {% for post in ta_posts %}
         <div class="post">
             <a href="{% url "ta_applications" post.id %}"><strong>{{ post.section }}</strong></a>
             <hr>
@@ -84,8 +97,25 @@ body {font-family: Arial, Helvetica, sans-serif;}
         </div>
         <br>
     {% endfor %}
+{% endif %}
+{% if ra_posts %}
+    <hr>
+    <h2>RA Posts:</h2>
+    {% for post in ra_posts %}
+        <div class="post">
+            <a href="{% url "ra_applications" post.id %}"><strong>{{ post.title }}</strong></a>
+            <p>{{ post.department }}</p>
+            <hr>
+            <p>{{ post.key_words }}</p>
+            <p>{{ post.description }}</p>
+        </div>
+        <br>
+    {% endfor %}
+{% endif %}
 </div>
 
+
 {% include "applicase/createTApostmodal.html" %}
+{% include "applicase/createRApostmodal.html" %}
 </body>
 {% endblock %}

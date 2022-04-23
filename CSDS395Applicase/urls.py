@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from applicase.views import SignUpView, StudentInterestsView, student_home, \
-    professor_home, home, studentuniqueID, ta_post_submit, ta_applications, is_student, is_professor, student_interest_update, add_user_to_ta_chat, user_chats
+    professor_home, home, studentuniqueID, ta_post_submit, ta_applications, is_student, is_professor, student_interest_update, add_user_to_ta_chat, user_chats, ra_post_submit, ra_applications
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,9 +36,11 @@ urlpatterns = [
     path('interests/', StudentInterestsView, name='student_interests'),
     path('signup/integrity-error', studentuniqueID, name='integrity-error'),
     path('professor/ta-post/', ta_post_submit, name='ta-post'),
-    path('professor/<int:pk>/applications', ta_applications, name='ta_applications'),
+    path('professor/ra-post/', ra_post_submit, name='ra-post'),
+    path('professor/<int:pk>/ta_applications', ta_applications, name='ta_applications'),
+    path('professor/<int:pk>/ra_applications', ra_applications, name='ra_applications'),
     path('student/interest-update/', student_interest_update, name='student-update-interest'),
-    path('add/chat_member/<int:pk>', add_user_to_ta_chat, name='add_chat_member'),
+    path('add/chat_member/ta/<int:pk>', add_user_to_ta_chat, name='add_chat_member'),
     path('chats/', user_chats, name='chats'),
 ]
 

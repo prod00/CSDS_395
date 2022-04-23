@@ -1,0 +1,62 @@
+
+
+<div id="RAModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="closera">&times;</span>
+      <h2 style="text-align: center">Research Assistant</h2><hr>
+    <form method="POST" enctype="multipart/form-data" action="/professor/ra-post/">
+        {% csrf_token %}
+
+        <label for="title">Job Title: </label><input type="text" name="title" id="title">
+
+        <label for="key_words">Key Words: </label><input type="text" name="key_words" id="key_words">
+
+        <label for="dept">Department: </label>
+        <input type="text" name="department" id="dept" list="dept_items" style="width: 100%" required>
+        <datalist id="dept_items">
+            {% for department in departments %}
+                <option>{{ department.department }}</option>
+            {% endfor %}
+
+        </datalist>
+        <br>
+        <br>
+        <label for="textarea">Description: </label>
+        <textarea name="description" id="textarea" style="width: 100%" required></textarea>
+
+
+        <input type="submit" value="submit">
+    </form>
+  </div>
+
+</div>
+<script>
+
+// Get the modal
+var ramodal = document.getElementById("RAModal");
+
+// Get the button that opens the modal
+var rabtn = document.getElementById("raBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("closera")[0];
+
+// When the user clicks the button, open the modal
+rabtn.onclick = function() {
+  ramodal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  ramodal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == ramodal) {
+    ramodal.style.display = "none";
+  }
+}
+</script>

@@ -129,11 +129,26 @@ class StudentInterests(models.Model):
         return self.interest
 
 class TAPositionChat(models.Model):
-    members = models.ManyToManyField(User, related_name="chat_members")
+    members = models.ManyToManyField(User, related_name="ta_chat_members")
     position = models.ForeignKey(TAPositionPost, on_delete=models.CASCADE)
 
     def _str_(self):
         return self.position
 
 
+class RAPositionChat(models.Model):
+    members = models.ManyToManyField(User, related_name="ra_chat_members")
+    position = models.ForeignKey(RAPositionPost, on_delete=models.CASCADE)
 
+    def _str_(self):
+        return self.position
+
+class RAApplication(models.Model):
+    user = models.ForeignKey(Student, on_delete=models.CASCADE)
+    date_applied = models.DateTimeField(default=timezone.now)
+    position = models.ForeignKey(RAPositionPost, on_delete=models.CASCADE)
+
+    comment = models.TextField()
+
+    def __str__(self):
+        return self.position
