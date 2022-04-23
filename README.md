@@ -23,11 +23,12 @@ features they may want to implement.
 2. cd into CSDS_395 
 3. in terminal run "pip install -r requirements.txt"
 4. *To Run Live Chat must install docker*
-5. *Live Chat only* then "docker run -p 6379:6379 -d redis:5"
-6. *Live Chat only* then "python -m pip install channels_redis"
-7. then "python loadData.py"
-8. then "python loadPosts.py"
-9. then "python manage.py makemigrations"
-10. then "python manage.py migrate"
-11. then "python manage.py runserver"
-12. click the link that is displayed in terminal
+5. https://docs.docker.com/desktop/
+6. *Live Chat only* then "docker run -p 6379:6379 -d redis:5"
+7. *Live Chat only* then "python -m pip install channels_redis"
+8. then "python loadData.py"
+9. then "python loadPosts.py"
+10. then "python manage.py makemigrations"
+11. then "python manage.py migrate"
+12. then "python manage.py runserver"
+13. click the link that is displayed in terminal
