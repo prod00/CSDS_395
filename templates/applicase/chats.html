@@ -12,16 +12,32 @@
     }
     </style>
     {% if chats %}
-        <h1>Your Chat Streams</h1>
-    {% for chat in chats %}
-        <div class="chat">
-            <a href="{% url 'room' chat.position.id %}">{{ chat.position }}</a>
-            {% for member in chat.members.all %}
-                <p>{{ member.first_name }} {{ member.last_name }}</p>
+        <div style="width: 50%" class="container">
+        <div class="row justify-content-center">
+        <div class="card basic">
+        <div id="chat-log" class="card-body">
+        <a class="logo align-items-center w-auto d-flex justify-content-center py-4">
+                  <span class="d-none d-lg-block">Your Chat Streams</span>
+
+        </a>
+{#        <h1>Your Chat Streams</h1>#}
+        <div class="row"/>
+            {% for chat in chats %}
+                <div style="width: 45%; margin-left: 5px" class="alert alert-info alert-dismissible fade show" role="alert">
+                    <h4 class="alert-heading"><i class="bi bi-chat-left-text"></i><a style="margin-left: 10px" href="{% url 'room' chat.position.id %}">{{ chat.position }}</a></h4>
+                    <hr>
+                    {% for member in chat.members.all %}
+                        <p><i class="bi bi-person-badge-fill" style="margin-right: 10px"></i> {{ member.first_name }} {{ member.last_name }}</p>
+                    {% endfor %}
+                </div>
+                <br>
             {% endfor %}
         </div>
-        <br>
-    {% endfor %}
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
     {% else %}
         <strong style="text-align: center">There are currently no chats</strong>
     {% endif %}

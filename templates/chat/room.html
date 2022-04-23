@@ -25,28 +25,55 @@
     }
 </style>
 <p id="username" hidden>{{ user.username }}</p>
+<div style="width: 50%" class="container">
+          <div class="row justify-content-center">
+    <div class="card basic">
+        <div id="chat-log" class="card-body">
+        <a class="logo align-items-center w-auto d-flex justify-content-center py-4">
+                  <span class="d-none d-lg-block">Chat</span>
+
+        </a>
         {% for message in messages%}
             {% if message.author == user %}
-                <div class="new_message_current">
-                    <p> {{ user.first_name }} {{ user.last_name }}: ({{ user.username }})</p><hr>
+                <div class="row justify-content-end">
+                <div style="float: right; text-align: right; width: 20%" class="alert alert-primary alert-dismissible fade show">
+                    <h6 class="alert-heading"><i class="bi bi-file-earmark-person-fill" style="margin-right: 10px"></i> {{ user.first_name }} {{ user.last_name }}</h6>
+                    <p class="mb-0">{{ user.username }}</p>
+                    <hr>
                     <p>{{ message.context }}</p>
+                </div>
                 </div>
                 <br>
             {% endif %}
             {% if message.author != user %}
-                <div class="new_message_remote">
-                    <p> {{ message.author.first_name }} {{ message.author.last_name }}: ({{ message.author.username }})</p><hr>
+                <div class="row justify-content-start">
+                <div style="float: left; text-align: left; width: 20%" class="alert alert-secondary alert-dismissible fade show">
+                    <h6 class="alert-heading"><i class="bi bi-file-earmark-person" style="margin-right: 10px"></i> {{ user.first_name }} {{ user.last_name }}</h6>
+                    <p class="mb-0">{{ user.username }}</p>
+                    <hr>
                     <p>{{ message.context }}</p>
+                </div>
                 </div>
                 <br>
             {% endif %}
         {% endfor %}
-    <div id="chat-log">
-
-    </div>
+        </div>
+        </div>
+{#              <textarea id="chat-message-input" type="text" style="width: 100%;"></textarea>#}
+          <div class="row">
+              <input type="email" class="form-control" id="chat-message-input" placeholder="message here">
+{#              <input id="chat-message-submit" type="button" value="Send">#}
+{#              <div class="col-sm-10">#}
+              <button style="margin-top: 10px" type="submit" id="chat-message-submit" class="btn btn-primary" value="Send" >Send</button>
+{#              </div>#}
+          </div>
+          </div>
+</div>
+{#    <div id="chat-log">#}
+{##}
+{#    </div>#}
     <hr>
-    <textarea id="chat-message-input" type="text" style="width: 100%;"></textarea>
-    <input id="chat-message-submit" type="button" value="Send">
+
 
     <script>
 
@@ -69,23 +96,31 @@
 
 
             if (data.message.username === username){
-                let new_message_format = "<div style='border: 2px black solid; background-color: lightgrey; text-align: right; margin-left: 5%;\n" +
-                    "        padding: 2%;\n" +
-                    "        border-radius: 10px;'>" + "<p>" + data.message.first_name + " " + data.message.last_name + ": (" + data.message.username + ")"+ "</p>" + "<hr>" + "<p>" + data.message.message + "</p>" + "</div>" + "<br>";
+                let new_message_format =
+                    '<div class="row justify-content-end">'
+                    +'<div style="float: right; text-align: right; width: 20%" class="alert alert-primary alert-dismissible fade show">'
+                    + '<h6 class="alert-heading"><i class="bi bi-file-earmark-person-fill" style="margin-right: 10px"></i>' + data.message.first_name + data.message.last_name
+                    + '</h6>'
+                    + '<p class="mb-0">' + data.message.username + '</p>'
+                    + '<hr>'
+                    + '<p>' + data.message.message + '</p>'
+                    + '</div>' + '</div>' + '<br>'
                 console.log(new_message_format);
                 $("#chat-log").append(new_message_format);
             }
             else{
-                let new_message_format = "<div style='border: 2px black solid; background-color: lightblue; text-align: left; padding: 2%;\n" +
-                    "        margin-right: 10%;\n" +
-                    "        border-radius: 10px;'>" + "<p>" + data.message.first_name + " " + data.message.last_name + ": (" + data.message.username + ")"+"</p>" + "<hr>" + "<p>" + data.message.message + "</p>" + "</div>" + "<br>";
+                let new_message_format =
+                    '<div class="row justify-content-start">'
+                    +'<div style="float: left; text-align: left; width: 20%" class="alert alert-secondary alert-dismissible fade show">'
+                    + '<h6 class="alert-heading"><i class="bi bi-file-earmark-person" style="margin-right: 10px"></i>' + data.message.first_name + data.message.last_name
+                    + '</h6>'
+                    + '<p class="mb-0">' + data.message.username + '</p>'
+                    + '<hr>'
+                    + '<p>' + data.message.message + '</p>'
+                    + '</div>' + '</div>' + '<br>'
                 console.log(new_message_format);
                 $("#chat-log").append(new_message_format);
             }
-
-
-
-
         };
 
         chatSocket.onclose = function(e) {
